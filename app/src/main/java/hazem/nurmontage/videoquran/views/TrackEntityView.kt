@@ -41,6 +41,7 @@ class TrackEntityView @JvmOverloads constructor(
     }
 
     var iTrimLineCallback: ITrimLineCallback? = null
+    var currentCursorPosition: Int = 0
 
     private val paintItem = Paint(Paint.ANTI_ALIAS_FLAG)
     private var scaleFactor: Float = DEFAULT_SCALE
