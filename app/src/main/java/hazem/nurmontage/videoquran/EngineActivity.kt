@@ -1,12 +1,17 @@
 package hazem.nurmontage.videoquran
 
-import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import hazem.nurmontage.videoquran.common.Common
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
+import hazem.nurmontage.videoquran.views.TextCustumFont
 
 /**
  * STUB: EngineActivity - Main video editor
  * This is a placeholder for Phase 7. The original EngineActivity is ~8000 lines.
+ * Currently shows a placeholder screen instead of closing the app.
  */
 class EngineActivity : BaseActivity() {
 
@@ -24,8 +29,42 @@ class EngineActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: Phase 7 - Full EngineActivity implementation (~8000 lines)
-        // For now, just finish and go back
-        finish()
+
+        // Placeholder UI - will be replaced in Phase 7
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(Color.parseColor("#1A1A2E"))
+            setPadding(64, 128, 64, 64)
+        }
+
+        val title = TextCustumFont(this).apply {
+            text = "NurMontage"
+            setTextColor(Color.WHITE)
+            textSize = 28f
+        }
+
+        val subtitle = TextCustumFont(this).apply {
+            text = "محرك الفيديو قيد التطوير"
+            setTextColor(Color.parseColor("#B0BEC5"))
+            textSize = 16f
+            setPadding(0, 32, 0, 0)
+        }
+
+        val phase = TextCustumFont(this).apply {
+            text = "Phase 7 — قادم قريباً"
+            setTextColor(Color.parseColor("#7C4DFF"))
+            textSize = 14f
+            setPadding(0, 16, 0, 0)
+        }
+
+        val progress = ProgressBar(this).apply {
+            setPadding(0, 48, 0, 0)
+        }
+
+        layout.addView(title)
+        layout.addView(subtitle)
+        layout.addView(phase)
+        layout.addView(progress)
+        setContentView(layout)
     }
 }
