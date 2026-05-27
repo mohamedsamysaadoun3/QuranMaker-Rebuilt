@@ -3,6 +3,7 @@ package hazem.nurmontage.videoquran.constant
 enum class IpadType {
     IPAD,
     IPAD_UNBLUR,
+    CLASSIC,
     IPAD_CLASSIC,
     ROUND_RECT,
     RECT,

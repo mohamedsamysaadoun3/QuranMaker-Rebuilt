@@ -29,4 +29,6 @@ class EntityTranslationTemplate(
     var rectF: MRectF? = null
     var isHaveBg: Boolean = false
     var clr_bg: Int = 0
+    var translation: String? = null
+    var translationComplete: String? = null
 }

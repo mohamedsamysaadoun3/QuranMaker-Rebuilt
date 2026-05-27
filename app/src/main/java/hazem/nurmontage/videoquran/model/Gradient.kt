@@ -7,8 +7,11 @@ import java.io.Serializable
  * Used for background gradients in the video editor.
  */
 data class Gradient(
-    val color: Int,
-    val second: Int,
-    val three: Int,
+    val startColor: Int,
+    val centerColor: Int,
+    val endColor: Int,
     var angle: Int = 81
 ) : Serializable
+
+// Backward compatibility - keep old constructor pattern
+// Common.kt uses Gradient(-711565, -6000461, -10897425) which maps to startColor, centerColor, endColor
