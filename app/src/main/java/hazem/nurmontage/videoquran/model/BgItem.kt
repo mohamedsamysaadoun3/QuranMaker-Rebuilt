@@ -6,5 +6,5 @@ data class BgItem(
     var id: Int = 0,
     var x: Float = 0f,
     var y: Float = 0f,
-    var drawableName: String = ""
+    var image: String = ""
 ) : Serializable

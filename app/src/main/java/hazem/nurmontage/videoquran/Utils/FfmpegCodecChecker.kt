@@ -9,19 +9,21 @@ import android.util.Log
 object FfmpegCodecChecker {
 
     data class CodecInfo(
+        val isHardwareSupported: Boolean = false,
+        val preferredCodec: String? = null,
         var videoCodec: String? = null,
         var audioCodec: String? = null,
         var isVideoHwAccelerated: Boolean = false
     )
 
-    interface CodecCallback {
+    fun interface CodecCallback {
         fun onResult(codecInfo: CodecInfo)
     }
 
     fun detectCodecsAsync(callback: CodecCallback) {
-        // TODO: Implement with FFmpegKit in Phase 7
-        // For now, return default codec info
         val info = CodecInfo(
+            isHardwareSupported = false,
+            preferredCodec = null,
             videoCodec = "libx264",
             audioCodec = "aac",
             isVideoHwAccelerated = false

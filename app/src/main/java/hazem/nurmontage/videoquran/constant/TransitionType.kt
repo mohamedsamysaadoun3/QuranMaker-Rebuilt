@@ -1,39 +1,54 @@
 package hazem.nurmontage.videoquran.constant
 
+/**
+ * Transition types for ayah/bismilah animations.
+ * Converted from original Java enum with all values preserved.
+ */
 enum class TransitionType(val value: String) {
     NONE("none"),
     FADE("fade"),
-    DISSOLVE("dissolve"),
-    WIPE_RIGHT("wipeRight"),
-    WIPE_LEFT("wipeLeft"),
-    WIPE_UP("wipeUp"),
-    WIPE_DOWN("wipeDown"),
-    SLIDE_LEFT("slideLeft"),
-    SLIDE_RIGHT("slideRight"),
-    SLIDE_TOP("slideTop"),
-    SLIDE_BOTTOM("slideBottom"),
-    ZOOM_IN("zoomIn"),
-    ZOOM_OUT("zoomOut"),
-    ROTATE("rotate"),
-    BLUR("blur"),
-    PIXELATE("pixelate"),
-    FLASH("flash"),
-    INVERT("invert"),
-    SEPIA("sepia"),
-    BRIGHTNESS("brightness"),
-    CIRCLE_CROP("circleCrop"),
-    RECT_CROP("rectCrop"),
-    SLIDE_FADE("slideFade"),
-    ZOOM_FADE("zoomFade"),
-    ROTATE_FADE("rotateFade"),
-    FLIP_HORIZONTAL("flipH"),
-    FLIP_VERTICAL("flipV"),
-    SHAKE("shake"),
-    GLITCH("glitch"),
-    MORPH("morph");
+    FADE_IN("fade_in"),
+    FADE_OUT("fade_out"),
+    FADE_WHITE("fade_white"),
+    FADE_BLACK("fade_black"),
+    DISTANCE("distance"),
+    WIPE_RIGHT("wiperight"),
+    WIPE_LEFT("wipeleft"),
+    RADIAL("radial"),
+    SLIDE_TOP("slidetop"),
+    SLIDE_BOTTOM("slidebottom"),
+    SLIDE_TO_RIGHT("slideright"),
+    SLIDE_TO_LEFT("slideleft"),
+    JUMP("jump"),
+    SLIDE_TL("slide_tl"),
+    SLIDE_BR("slide_br"),
+    SLIDE_TR("slide_tr"),
+    SLIDE_BL("slide_bl"),
+    SLIDE_TC("slide_tc"),
+    SLIDE_BC("slide_bc"),
+    SLIDE_CR("slide_cr"),
+    SLIDE_CL("slide_cl"),
+    PIXELIZE("pixelize"),
+    HBLUR("hblur"),
+    HLSLICE("hlslice"),
+    SPIN_LEFT("spin_left"),
+    SPIN_RIGHT("spin_right"),
+    ZOOM_IN("zoomin"),
+    ZOOM_OUT("zoomout"),
+    ROTATE_L("rotate_l"),
+    ROTATE_R("rotate_r");
 
     companion object {
         fun fromValue(value: String): TransitionType =
             entries.find { it.value == value } ?: NONE
+    }
+
+    /** Angle property for transition items - used by EffectAyaFragment/EffectBismilahFragment */
+    object Angle {
+        const val SLIDE_LEFT = 180
+        const val SLIDE_RIGHT = 0
+        const val FADE = 0
+        const val JUMP = 0
+        const val DEFAULT = 0
     }
 }

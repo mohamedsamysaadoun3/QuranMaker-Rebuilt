@@ -11,7 +11,10 @@ data class Gradient(
     val centerColor: Int,
     val endColor: Int,
     var angle: Int = 81
-) : Serializable
+) : Serializable {
 
-// Backward compatibility - keep old constructor pattern
-// Common.kt uses Gradient(-711565, -6000461, -10897425) which maps to startColor, centerColor, endColor
+    /** Java compatibility aliases used by GradientAdabter */
+    fun getColor(): Int = startColor
+    fun getSecond(): Int = centerColor
+    fun getThree(): Int = endColor
+}

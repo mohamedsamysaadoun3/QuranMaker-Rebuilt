@@ -26,4 +26,7 @@ object Feadback {
         val body = "App Version: ${AppUtils.getVersionName(context)}\n\nError Details:\n$errorDetails"
         sendFeedback(context, subject, body)
     }
+
+    fun sendRenderStart(context: android.content.Context) { /* TODO: Phase 7 */ }
+    fun sendRenderEnd(context: android.content.Context) { /* TODO: Phase 7 */ }
 }

@@ -12,6 +12,11 @@ class RenderManager {
         totalWeight += task.weight
     }
 
+    /** Convenience method matching original Java: addTask(name, weight) */
+    fun addTask(name: String, weight: Int) {
+        addTask(RenderTask(name = name, weight = weight.toFloat()))
+    }
+
     fun clear() {
         tasks.clear()
         currentTaskIndex = 0
@@ -33,6 +38,11 @@ class RenderManager {
             return true
         }
         return false
+    }
+
+    /** Alias matching original Java: nextTask() */
+    fun nextTask() {
+        advanceToNext()
     }
 
     fun isComplete(): Boolean = currentTaskIndex >= tasks.size

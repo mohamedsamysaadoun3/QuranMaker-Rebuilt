@@ -103,4 +103,20 @@ object QuranReader {
     fun clearCache() {
         quranCache.clear()
     }
+
+    fun getAyahText(context: Context, surah: Int, aya: Int): String? {
+        val lines = readQuranFile(context, "quran-simple.txt")
+        val index = getAyahIndex(surah, aya) ?: return null
+        return lines.getOrElse(index) { null }
+    }
+    fun getTranslationAyahText(surah: Int, aya: Int): String? {
+        // TODO: Phase 7 - Read translation text
+        return null
+    }
+
+    fun getTranslationAyahText(context: Context, fileName: String, surah: Int, aya: Int): String? {
+        val lines = readQuranFile(context, fileName)
+        val index = getAyahIndex(surah, aya) ?: return null
+        return lines.getOrElse(index) { null }
+    }
 }

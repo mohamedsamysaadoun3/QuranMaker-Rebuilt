@@ -90,6 +90,16 @@ class TranslationQuranEntity : EntityView(), Serializable {
         canvas.restore()
     }
 
+    /** Color of the translation aya — alias used by ColorTrslAyaFragment */
+    fun getClrAya(): Int = textColor
+
+    /** Preset ordinal — used by ColorTrslAyaFragment */
+    fun getmPreset(): Int = preset.ordinal
+
+    /** Map preset ordinal back to AyaTextPreset */
+    fun get(presetIndex: Int): AyaTextPreset =
+        AyaTextPreset.entries.getOrElse(presetIndex) { AyaTextPreset.NONE }
+
     fun invalidatePaints() { textPaint = null }
     override fun getType(): EntityType = EntityType.TRANSLATION
 

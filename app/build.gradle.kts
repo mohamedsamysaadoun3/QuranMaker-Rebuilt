@@ -108,10 +108,12 @@ dependencies {
     // Image Loading - Glide
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
+
+    // Konfetti - Using local stubs for core/xml API (2.x)
 
     // FFmpeg Kit - Video Processing
-    // TODO: Add FFmpegKit AAR module from extracted APK or use local maven
-    // implementation(libs.ffmpeg.kit)
+    implementation(project(":ffmpeg-kit-stub"))
 
     // Google Play Billing
     implementation(libs.billing.ktx)
@@ -120,6 +122,9 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
     implementation(libs.media3.common)
+
+    // Apache Commons IO
+    implementation("commons-io:commons-io:2.16.1")
 
     // Gson (JSON Serialization)
     implementation(libs.gson)

@@ -126,7 +126,7 @@ object Common {
     var p_h_border: Float = 0.065f
     var p_w_border: Float = 0.1f
     var radius: Int = 0
-    var rect: Rect? = null
+    var rect: android.graphics.RectF? = null
     var english_app_font: String = "Poppins-Regular.ttf"
     //endregion
 

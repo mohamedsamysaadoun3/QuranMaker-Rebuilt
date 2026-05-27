@@ -3,6 +3,6 @@ package hazem.nurmontage.videoquran.model
 import java.io.Serializable
 
 data class YoutuberModel(
-    val link: String = "",
-    val image: String = ""
+    val lnk: String = "",
+    val img: Int = 0
 ) : Serializable

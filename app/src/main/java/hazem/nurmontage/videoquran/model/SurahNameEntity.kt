@@ -4,6 +4,7 @@ import android.graphics.*
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import hazem.nurmontage.videoquran.constant.AyaTextPreset
 import hazem.nurmontage.videoquran.constant.SurahNameStyle
 import java.io.Serializable
 
@@ -59,6 +60,21 @@ class SurahNameEntity : EntityView() {
         layout.draw(canvas)
         canvas.restore()
     }
+
+    /** Color of the surah name — alias used by ColorS_NameFragment */
+    fun getClrS_name(): Int = textColor
+
+    /** Preset ordinal — used by ColorS_NameFragment */
+    fun getmPreset(): Int = 0
+
+    /** Map preset ordinal back to AyaTextPreset */
+    fun get(presetIndex: Int): AyaTextPreset =
+        AyaTextPreset.entries.getOrElse(presetIndex) { AyaTextPreset.NONE }
+
+    /** Set the surah name preset */
+    fun setColor(color: Int) { textColor = color; invalidatePaints() }
+
+    fun setPreset(p: AyaTextPreset) { /* no-op for now; SurahNameEntity doesn't have preset field yet */ }
 
     fun invalidatePaints() { textPaint = null; zaghrafatPaint = null }
     override fun getType(): EntityType = EntityType.SURAH_NAME

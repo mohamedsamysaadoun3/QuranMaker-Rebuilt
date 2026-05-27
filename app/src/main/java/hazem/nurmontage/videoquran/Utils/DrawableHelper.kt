@@ -15,6 +15,7 @@ object DrawableHelper {
         "shamerli" to "shamerli_icon",
         "warach" to "warach_icon",
         "nour_hoda" to "nour_hoda_icon",
+        "nour_hode" to "nour_hoda_icon",
     )
 
     fun getDrawableResId(context: Context, name: String): Int {
@@ -27,5 +28,14 @@ object DrawableHelper {
 
     fun getBackgroundDrawableName(index: Int): String {
         return if (index in 1..38) "bg_$index" else "bg_1"
+    }
+
+    /**
+     * Get drawable resource ID by icon name (e.g., "hafes" -> R.drawable.hafes_icon).
+     * Used by IconQuranAdabters. Requires a Context for resource lookup.
+     */
+    fun getIDDrawableIconByName(context: Context, name: String): Int {
+        val drawableName = getIconDrawableName(name)
+        return getDrawableResId(context, drawableName)
     }
 }

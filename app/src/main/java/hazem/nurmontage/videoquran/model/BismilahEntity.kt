@@ -79,6 +79,16 @@ class BismilahEntity : EntityView() {
 
     fun getBismilahTimeline(): BismilahTimeline = bismilahTimeline
 
+    /** Color of the aya text — alias used by ColorBismilahFragment */
+    fun getClrAya(): Int = textColor
+
+    /** Preset ordinal — used by ColorBismilahFragment */
+    fun getmPreset(): Int = preset.ordinal
+
+    /** Map preset ordinal back to AyaTextPreset */
+    fun get(presetIndex: Int): AyaTextPreset =
+        AyaTextPreset.entries.getOrElse(presetIndex) { AyaTextPreset.NONE }
+
     fun setColor(color: Int) {
         textColor = color
         invalidatePaints()

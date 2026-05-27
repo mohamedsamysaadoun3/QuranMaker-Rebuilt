@@ -1,5 +1,6 @@
 package hazem.nurmontage.videoquran.entity_timeline
 
+import android.media.MediaPlayer
 import hazem.nurmontage.videoquran.model.EffectAudio
 import java.io.Serializable
 
@@ -29,6 +30,29 @@ class EntityAudio : Entity() {
 
     // Reverb presets
     var reverbPreset: String = "normal"
+
+    // Seconds per pixel on the timeline (used by audio effect fragments)
+    var secondInScreen: Float = 1f
+
+    // MediaPlayer reference (managed by the hosting requireActivity())
+    var mediaPlayer: MediaPlayer? = null
+
+    // Effect audio integration (used by audio_effect fragments)
+    private var _effectAudio: EffectAudio? = null
+
+    val effectAudio: EffectAudio
+        get() {
+            if (_effectAudio == null) {
+                _effectAudio = EffectAudio()
+            }
+            return _effectAudio!!
+        }
+
+    fun setEffectAudio(effect: EffectAudio) {
+        _effectAudio = effect
+    }
+
+
 
     override fun getType(): EntityType = EntityType.AUDIO
 

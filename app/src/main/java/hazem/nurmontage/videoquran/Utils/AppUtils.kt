@@ -20,4 +20,14 @@ object AppUtils {
             pInfo.longVersionCode
         } catch (_: Exception) { 0L }
     }
+
+    /**
+     * Alias matching the original Java API name.
+     * Returns the app version name string, or "1.6" as fallback.
+     */
+    fun getAppVersionName(context: Context): String {
+        return try {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.6"
+        } catch (_: Exception) { "1.6" }
+    }
 }

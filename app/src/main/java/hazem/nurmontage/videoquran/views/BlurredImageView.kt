@@ -441,7 +441,7 @@ class BlurredImageView @JvmOverloads constructor(
     // === TYPEFACE / PRESET ===
     fun setIcon(name: String, drawable: VectorDrawable) {
         for (entity in quranEntities) {
-            if (entity.icon != null && entity.icon != name && entity.getNumber() != -1) {
+            if (entity.icon != null && entity.icon != name && entity.number != -1) {
                 entity.setVectorDrawable(drawable)
                 entity.icon = name
                 entity.updateIconDraw()

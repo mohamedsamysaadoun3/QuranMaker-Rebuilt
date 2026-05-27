@@ -83,6 +83,7 @@ class SquareOutlineProgressBar @JvmOverloads constructor(
 
     fun getMax(): Int = maxProgress
 
+
     fun setCornerRadius(radius: Float) {
         cornerRadius = radius
         invalidate()

@@ -52,4 +52,13 @@ object AudioUtils {
             0L
         }
     }
+
+    fun downloadFile(context: android.content.Context, url: String, folder: String): String? {
+        // TODO: Phase 7 - Download file from URL
+        return null
+    }
+    fun copyFromUri(context: android.content.Context, uri: android.net.Uri, folder: String): String? {
+        // TODO: Phase 7 - Copy file from URI
+        return null
+    }
 }

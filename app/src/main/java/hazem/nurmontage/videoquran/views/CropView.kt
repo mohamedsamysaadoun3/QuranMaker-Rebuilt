@@ -104,7 +104,7 @@ class CropView @JvmOverloads constructor(
     fun getMDrawingX(): Float = mDrawingX
     fun getMDrawingY(): Float = mDrawingY
 
-    fun setBitmap(bmp: Bitmap, rect: Rect, cornerRadius: Int, skipAnim: Boolean) {
+    fun setBitmap(bmp: Bitmap, rect: android.graphics.RectF, cornerRadius: Int, skipAnim: Boolean) {
         bitmap = bmp
         radius = cornerRadius
         mCanvasWidth = (width - paddingStart - paddingEnd).toFloat()
@@ -271,5 +271,14 @@ class CropView @JvmOverloads constructor(
         if (scaleHandled) { invalidate(); return true }
         if (isDragging || event.action == MotionEvent.ACTION_DOWN) { invalidate(); return true }
         return super.onTouchEvent(event)
+    }
+
+    fun croppedBitmap(): android.graphics.Bitmap? {
+        // TODO: Phase 7 - Return the cropped bitmap
+        return null
+    }
+    
+    fun rectSquare(): android.graphics.RectF {
+        return android.graphics.RectF(cropRect)
     }
 }

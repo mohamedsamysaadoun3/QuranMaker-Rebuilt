@@ -112,5 +112,9 @@ abstract class Entity : Serializable {
 
     abstract fun getType(): EntityType
 
+    // === Entity view reference (used by EditEntityFragment.checkIcon) ===
+    var entityView: Any? = null
+
     enum class EntityType { QURAN, TRANSLATION, BISMILAH, AUDIO, TEXT, SURAH_NAME }
 }
+

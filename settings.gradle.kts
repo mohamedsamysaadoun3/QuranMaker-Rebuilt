@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "QuranMaker"
 include(":app")
+include(":ffmpeg-kit-stub")

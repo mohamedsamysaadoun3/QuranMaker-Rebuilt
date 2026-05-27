@@ -67,7 +67,7 @@ class QuranEntity : EntityView(), Serializable {
     var staticLayout: StaticLayout? = null
     var translationLayout: StaticLayout? = null
     private var vectorDrawable: VectorDrawable? = null
-    private var number: Int = -1
+    var number: Int = -1
 
     fun getTextPaint(): TextPaint {
         if (textPaint == null) {
@@ -125,8 +125,7 @@ class QuranEntity : EntityView(), Serializable {
     fun setNameFont(name: String) { fontName = name }
     fun getNameFont(): String = fontName
 
-    fun getNumber(): Int = number
-    fun setNumber(n: Int) { number = n }
+
 
     fun setVectorDrawable(drawable: VectorDrawable) {
         vectorDrawable = drawable
@@ -141,6 +140,16 @@ class QuranEntity : EntityView(), Serializable {
         fontName = name
         invalidatePaints()
     }
+
+    /** Color of the aya text — alias used by ColorAyaFragment */
+    fun getClrAya(): Int = textColor
+
+    /** Preset ordinal — used by ColorAyaFragment */
+    fun getmPreset(): Int = preset.ordinal
+
+    /** Map preset ordinal back to AyaTextPreset */
+    fun get(presetIndex: Int): AyaTextPreset =
+        AyaTextPreset.entries.getOrElse(presetIndex) { AyaTextPreset.NONE }
 
     fun setColor(color: Int) {
         textColor = color
@@ -169,4 +178,52 @@ class QuranEntity : EntityView(), Serializable {
         invalidatePaints()
         createLayout(rect.width().toInt())
     }
+
+    // === Java-interop property aliases (used by fragments) ===
+
+    /** Alias for [aya] — original Java field name was 'txt' */
+    var txt: String
+        get() = aya
+        set(value) { aya = value }
+
+    /** Alias for [completeAya] — original Java field name was 'complete_aya' */
+    var complete_aya: String
+        get() = completeAya
+        set(value) { completeAya = value }
+
+    /** Alias for [translationComplete] — original Java field name was 'translation_complete' */
+    var translation_complete: String?
+        get() = translationComplete
+        set(value) { translationComplete = value }
+
+    /** Index of the number portion in the text — used by EditTextFragment */
+    var indexNumber: Int = -1
+
+    /** Alias for [startWordIndex] — original Java field name was 'startWord_index' */
+    var startWord_index: Int
+        get() = startWordIndex
+        set(value) { startWordIndex = value }
+
+    /** Alias for [endWordIndex] — original Java field name was 'endWord_index' */
+    var endWord_index: Int
+        get() = endWordIndex
+        set(value) { endWordIndex = value }
+
+    /** Reference to the EntityQuranTimeline that owns this entity */
+    var entityQuran: hazem.nurmontage.videoquran.entity_timeline.EntityQuranTimeline? = null
+
+    /** Initialize preset from ordinal index — used by EditTextFragment */
+    fun initPreset(presetOrdinal: Int) {
+        preset = AyaTextPreset.entries.getOrElse(presetOrdinal) { AyaTextPreset.NONE }
+    }
+
+    /** Stop any running animation — used by EffectAyaFragment / EffectBismilahFragment */
+    fun endAnimator() {
+        animationProgress = 1f
+        // TODO: Cancel any active ValueAnimator when animation system is integrated
+    }
+
+    /** Public getter for number — used by BlurredImageView */
+
+    /** Public setter for number */
 }

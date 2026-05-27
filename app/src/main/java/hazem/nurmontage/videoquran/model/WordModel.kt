@@ -1,6 +1,6 @@
 package hazem.nurmontage.videoquran.model
 
 data class WordModel(
-    val text: String = "",
+    val w: String = "",
     var isSelected: Boolean = false
 )

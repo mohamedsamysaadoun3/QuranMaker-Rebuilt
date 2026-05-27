@@ -1,6 +1,7 @@
 package hazem.nurmontage.videoquran.entity_timeline
 
 import hazem.nurmontage.videoquran.model.EntityQuranTemplate
+import hazem.nurmontage.videoquran.model.QuranEntity
 
 /**
  * Quran ayah timeline block entity.
@@ -14,6 +15,12 @@ class EntityQuranTimeline : Entity() {
     var surahName: String = ""
     var ayaText: String = ""
     var completeAyaText: String = ""
+
+    // Seconds per pixel on the timeline (used by effect fragments)
+    var secondInScreen: Float = 1f
+
+    // QuranEntity view model (used by effect fragments for animations)
+    var quranEntity: QuranEntity = QuranEntity()
 
     override fun getType(): EntityType = EntityType.QURAN
 
