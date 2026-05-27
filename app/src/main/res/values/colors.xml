@@ -20,5 +20,4 @@
     <color name="your_checked_color">#ff03dac5</color>
     <color name="your_disabled_color">#ffff0000</color>
     <color name="your_unchecked_color">#ffffffff</color>
-    <color name="exo_styled_error_message_background">#80808080</color>
 </resources>
