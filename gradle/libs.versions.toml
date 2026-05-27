@@ -30,6 +30,8 @@ espressoCore = "3.6.1"
 dynamicanimation = "1.0.0"
 datastore = "1.1.1"
 window = "1.3.0"
+media3 = "1.5.1"
+gson = "2.11.0"
 
 [libraries]
 # AndroidX Core
@@ -67,8 +69,8 @@ androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-p
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glideCompiler" }
 
-# FFmpeg Kit
-ffmpeg-kit = { group = "com.arthenica", name = "ffmpeg-kit-full-gpl", version.ref = "ffmpegKit" }
+# FFmpeg Kit (via JitPack)
+ffmpeg-kit = { group = "com.github.arthenica", name = "ffmpeg-kit", version = "v6.0-2" }
 
 # Google Billing
 billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
@@ -76,6 +78,14 @@ billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", versi
 # Hilt (DI)
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+
+# Media3 (ExoPlayer)
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
+media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
+media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3" }
+
+# Gson (JSON Serialization)
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 # Kotlin Coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }

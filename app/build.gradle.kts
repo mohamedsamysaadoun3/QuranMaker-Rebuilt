@@ -110,10 +110,19 @@ dependencies {
     annotationProcessor(libs.glide.compiler)
 
     // FFmpeg Kit - Video Processing
-    implementation(libs.ffmpeg.kit)
+    // TODO: Add FFmpegKit AAR module from extracted APK or use local maven
+    // implementation(libs.ffmpeg.kit)
 
     // Google Play Billing
     implementation(libs.billing.ktx)
+
+    // Media3 (ExoPlayer)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.common)
+
+    // Gson (JSON Serialization)
+    implementation(libs.gson)
 
     // Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.core)

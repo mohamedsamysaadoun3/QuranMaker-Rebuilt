@@ -1,0 +1,34 @@
+package hazem.nurmontage.videoquran.views
+
+import android.content.Context
+import android.graphics.Typeface
+import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatEditText
+
+/**
+ * Custom EditText that applies the Arabic calligraphy font.
+ * Stub implementation – full drawing/attribute logic to be added later.
+ */
+class EditTextCustumFont @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = androidx.appcompat.R.attr.editTextStyle
+) : AppCompatEditText(context, attrs, defStyleAttr) {
+
+    private var typeface: Typeface? = null
+
+    init {
+        init(context)
+    }
+
+    private fun init(context: Context) {
+        if (typeface == null) {
+            try {
+                typeface = Typeface.createFromAsset(resources.assets, "fonts/arabic/خط الإبل.otf")
+                setTypeface(typeface)
+            } catch (_: Exception) {
+                // Font asset not found – stub mode, silently skip
+            }
+        }
+    }
+}
