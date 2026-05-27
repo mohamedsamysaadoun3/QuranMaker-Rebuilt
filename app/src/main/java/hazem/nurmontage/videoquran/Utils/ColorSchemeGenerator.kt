@@ -7,6 +7,45 @@ import kotlin.math.max
 
 object ColorSchemeGenerator {
 
+    data class Scheme(
+        val primary: Int,
+        val secondary: Int,
+        val tertiary: Int,
+        val label: Int,
+        val background: Int,
+        val surface: Int
+    )
+
+    fun generateScheme(color: Int, angle: Int = 0): Scheme {
+        val hsl = colorToHSL(color)
+        val h = hsl[0]
+        val s = hsl[1]
+        val l = hsl[2]
+
+        // Generate harmonious colors
+        val h2 = (h + 30) % 360
+        val h3 = (h + 60) % 360
+        val h4 = (h + 180) % 360
+
+        val primary = color
+        val secondary = hslToColor(h2, s.coerceAtMost(0.6f), l.coerceIn(0.3f, 0.7f))
+        val tertiary = hslToColor(h3, s.coerceAtMost(0.5f), l.coerceIn(0.4f, 0.6f))
+
+        // Label color: light text on dark backgrounds, dark text on light backgrounds
+        val label = if (isColorDark(color)) Color.WHITE else Color.BLACK
+        val background = hslToColor(h4, s.coerceAtMost(0.3f), 0.95f)
+        val surface = ColorUtils.darken(color, 0.3f)
+
+        return Scheme(
+            primary = primary,
+            secondary = secondary,
+            tertiary = tertiary,
+            label = label,
+            background = background,
+            surface = surface
+        )
+    }
+
     fun getComplementary(color: Int): Int {
         return Color.rgb(255 - Color.red(color), 255 - Color.green(color), 255 - Color.blue(color))
     }
@@ -25,19 +64,24 @@ object ColorSchemeGenerator {
         return Pair(hslToColor(h1, hsl[1], hsl[2]), hslToColor(h2, hsl[1], hsl[2]))
     }
 
+    fun isColorDark(color: Int): Boolean {
+        val darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
+        return darkness >= 0.5
+    }
+
     private fun colorToHSL(color: Int): FloatArray {
         val r = Color.red(color) / 255f
         val g = Color.green(color) / 255f
         val b = Color.blue(color) / 255f
-        val max = max(r, max(g, b))
-        val min = min(r, min(g, b))
-        val l = (max + min) / 2f
+        val maxVal = max(r, max(g, b))
+        val minVal = min(r, min(g, b))
+        val l = (maxVal + minVal) / 2f
         var h = 0f
         var s = 0f
-        if (max != min) {
-            val d = max - min
-            s = if (l > 0.5f) d / (2f - max - min) else d / (max + min)
-            h = when (max) {
+        if (maxVal != minVal) {
+            val d = maxVal - minVal
+            s = if (l > 0.5f) d / (2f - maxVal - minVal) else d / (maxVal + minVal)
+            h = when (maxVal) {
                 r -> (g - b) / d + (if (g < b) 6f else 0f)
                 g -> (b - r) / d + 2f
                 else -> (r - g) / d + 4f

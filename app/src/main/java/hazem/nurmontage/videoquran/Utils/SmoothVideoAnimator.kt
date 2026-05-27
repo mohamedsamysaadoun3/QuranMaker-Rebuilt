@@ -28,9 +28,9 @@ class SmoothVideoAnimator(
         mIsPlaying = true
         currentFrameIndex = maxOf(
             1,
-            Math.round(trackViewEntity.currentCursorPosition / 1000.0f * fps)
+            Math.round(trackViewEntity.getCurrentCursurPosition().toLong() / 1000.0f * fps)
         )
-        maxFrameIndex = mTemplate.duration_video_media * fps
+        maxFrameIndex = (mTemplate.duration_video_media * fps).toInt()
         lastFrameTimeNanos = 0L
         Choreographer.getInstance().postFrameCallback(this)
     }

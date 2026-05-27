@@ -98,4 +98,12 @@ object UtilsBitmap {
         canvas.drawRect(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat(), paint)
         return output
     }
+
+    fun cropToSquareWithRoundCornersPlusScale(
+        bitmap: Bitmap, rect: Rect, cornerRadius: Int, minW: Int, minH: Int
+    ): Bitmap {
+        val cropped = Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height())
+        val scaled = Bitmap.createScaledBitmap(cropped, minW, minH, true)
+        return scaled
+    }
 }

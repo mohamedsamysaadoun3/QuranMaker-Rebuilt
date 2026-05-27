@@ -14,8 +14,10 @@ enum class IpadType {
     BLUE_TYPE,
     MASK_BRUSH,
     IPAD_NEOMORPHIC,
+    NEUMORPHIC,
     HEART,
     BATTERY,
+    PROGRESS,
     CASSET,
     CASSET_IMG,
     CASSET_IMG_BLUR

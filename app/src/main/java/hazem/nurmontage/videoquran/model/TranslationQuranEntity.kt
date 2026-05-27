@@ -22,6 +22,25 @@ class TranslationQuranEntity : EntityView(), Serializable {
     var textSize: Float = 16f
     var opacity: Int = 255
     var preset: AyaTextPreset = AyaTextPreset.NONE
+        set(value) {
+            field = value
+            when (value) {
+                AyaTextPreset.OUTLINE -> {
+                    outlineWidth = 2f
+                    outlineColor = Color.BLACK
+                }
+                AyaTextPreset.SHADOW -> {
+                    shadowRadius = 4f
+                    shadowColor = Color.BLACK
+                }
+                AyaTextPreset.GLOW -> {
+                    // glow effect
+                }
+                else -> { /* NONE */ }
+            }
+            invalidatePaints()
+        }
+
     var alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
     var lineSpacing: Float = 1.2f
     var maxLines: Int = 0
@@ -44,6 +63,8 @@ class TranslationQuranEntity : EntityView(), Serializable {
         return textPaint!!
     }
 
+    fun getPaintAya(): TextPaint = getTextPaint()
+
     fun createLayout(availableWidth: Int) {
         val paint = getTextPaint()
         staticLayout = StaticLayout.Builder.obtain(text, 0, text.length, paint, availableWidth)
@@ -61,6 +82,54 @@ class TranslationQuranEntity : EntityView(), Serializable {
         canvas.restore()
     }
 
+    override fun draw(canvas: Canvas) {
+        val layout = staticLayout ?: return
+        canvas.save()
+        canvas.translate(rectF.left, rectF.top)
+        layout.draw(canvas)
+        canvas.restore()
+    }
+
     fun invalidatePaints() { textPaint = null }
     override fun getType(): EntityType = EntityType.TRANSLATION
+
+    // === BlurredImageView integration methods ===
+
+    fun setNameFont(name: String) { fontName = name }
+    fun getNameFont(): String = fontName
+
+    fun setTypeface(tf: Typeface, name: String) {
+        typeface = tf
+        fontName = name
+        invalidatePaints()
+    }
+
+    fun setColor(color: Int) {
+        textColor = color
+        colorTrsl = color
+        invalidatePaints()
+    }
+
+    fun updateSize(canvasWidth: Int, ayaRect: RectF) {
+        rectF.left = ayaRect.left
+        rectF.top = ayaRect.top
+        rectF.right = ayaRect.right
+        rectF.bottom = ayaRect.bottom
+        createLayout(ayaRect.width().toInt())
+    }
+
+    fun updateSizeResize(canvasWidth: Int, ayaRect: RectF) {
+        updateSize(canvasWidth, ayaRect)
+    }
+
+    fun applyAll(canvasWidth: Int, rect: RectF, textSize: Float, factorSize: Float) {
+        this.textSize = textSize
+        this.factorSize = factorSize
+        rectF.left = rect.left
+        rectF.top = rect.top
+        rectF.right = rect.right
+        rectF.bottom = rect.bottom
+        invalidatePaints()
+        createLayout(rect.width().toInt())
+    }
 }

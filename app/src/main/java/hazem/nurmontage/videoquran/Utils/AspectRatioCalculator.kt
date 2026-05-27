@@ -25,4 +25,28 @@ object AspectRatioCalculator {
             else -> Pair(1080, 1920)
         }
     }
+
+    /**
+     * Calculate width from height for SOCIAL_STORY aspect ratio (9:16).
+     */
+    fun calculateWidth(height: Int): Int {
+        // 9:16 ratio -> width = height * 9 / 16
+        return (height * 9f / 16f).toInt()
+    }
+
+    /**
+     * Calculate height from width for YouTube (16:9) aspect ratio.
+     */
+    fun calculateHeight_Youtube(width: Int): Int {
+        // 16:9 ratio -> height = width * 9 / 16
+        return (width * 9f / 16f).toInt()
+    }
+
+    /**
+     * Calculate height from width for social story (9:16) aspect ratio.
+     */
+    fun calculateHeight_Story(width: Int): Int {
+        // 9:16 ratio -> height = width * 16 / 9
+        return (width * 16f / 9f).toInt()
+    }
 }

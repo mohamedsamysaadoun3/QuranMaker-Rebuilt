@@ -12,4 +12,8 @@
         <enum name="zoom" value="4" />
     </attr>
     <attr name="use_controller" format="boolean" />
+
+    <declare-styleable name="CustomDiscreteSeekBar">
+        <attr name="labelsArray" />
+    </declare-styleable>
 </resources>

@@ -27,4 +27,28 @@ class Transition(
         it.offset_frame_out = offset_frame_out
         it.fromW = fromW
     }
+
+    companion object {
+        // Transition type constants used by BlurredImageView
+        @JvmField
+        val SLIDE_IN_LEFT = Transition(type_in = "slide_in_left", isIn = true)
+
+        @JvmField
+        val SLIDE_IN_RIGHT = Transition(type_in = "slide_in_right", isIn = true)
+
+        @JvmField
+        val SLIDE_OUT_LEFT = Transition(type_out = "slide_out_left", isOut = true)
+
+        @JvmField
+        val SLIDE_OUT_RIGHT = Transition(type_out = "slide_out_right", isOut = true)
+
+        @JvmField
+        val FADE_IN = Transition(type_in = "fade_in", isIn = true)
+
+        @JvmField
+        val FADE_OUT = Transition(type_out = "fade_out", isOut = true)
+
+        @JvmField
+        val NONE = Transition()
+    }
 }

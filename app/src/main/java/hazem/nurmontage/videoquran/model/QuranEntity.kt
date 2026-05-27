@@ -4,6 +4,7 @@ import android.graphics.*
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import android.graphics.drawable.VectorDrawable
 import hazem.nurmontage.videoquran.constant.AyaTextPreset
 import java.io.Serializable
 
@@ -13,7 +14,7 @@ class QuranEntity : EntityView(), Serializable {
     var completeAya: String = ""
     var translation: String? = null
     var translationComplete: String? = null
-    var fontName: String = "عثماني.otf"
+    var fontName: String = "\u0639\u062B\u0645\u0627\u0646\u064A.otf"
     var translationFont: String = "ReadexPro_Medium.ttf"
     var typeface: Typeface? = null
     var translationTypeface: Typeface? = null
@@ -29,6 +30,26 @@ class QuranEntity : EntityView(), Serializable {
     var shadowRadius: Float = 4f
     var glowRadius: Float = 8f
     var preset: AyaTextPreset = AyaTextPreset.NONE
+        set(value) {
+            field = value
+            when (value) {
+                AyaTextPreset.OUTLINE -> {
+                    outlineWidth = 3f
+                    outlineColor = Color.BLACK
+                }
+                AyaTextPreset.SHADOW -> {
+                    shadowRadius = 6f
+                    shadowColor = Color.BLACK
+                }
+                AyaTextPreset.GLOW -> {
+                    glowRadius = 10f
+                    glowColor = Color.WHITE
+                }
+                else -> { /* NONE */ }
+            }
+            invalidatePaints()
+        }
+
     var opacity: Int = 255
     var alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
     var lineSpacing: Float = 1.2f
@@ -45,6 +66,8 @@ class QuranEntity : EntityView(), Serializable {
     private var outlinePaint: TextPaint? = null
     var staticLayout: StaticLayout? = null
     var translationLayout: StaticLayout? = null
+    private var vectorDrawable: VectorDrawable? = null
+    private var number: Int = -1
 
     fun getTextPaint(): TextPaint {
         if (textPaint == null) {
@@ -67,6 +90,8 @@ class QuranEntity : EntityView(), Serializable {
         return outlinePaint!!
     }
 
+    fun getPaintAya(): TextPaint = getTextPaint()
+
     fun createLayout(availableWidth: Int) {
         val paint = getTextPaint()
         staticLayout = StaticLayout.Builder.obtain(aya, 0, aya.length, paint, availableWidth)
@@ -84,6 +109,64 @@ class QuranEntity : EntityView(), Serializable {
         canvas.restore()
     }
 
+    override fun draw(canvas: Canvas) {
+        val layout = staticLayout ?: return
+        canvas.save()
+        canvas.translate(rectF.left, rectF.top)
+        layout.draw(canvas)
+        canvas.restore()
+    }
+
     fun invalidatePaints() { textPaint = null; outlinePaint = null }
     override fun getType(): EntityType = EntityType.QURAN
+
+    // === BlurredImageView integration methods ===
+
+    fun setNameFont(name: String) { fontName = name }
+    fun getNameFont(): String = fontName
+
+    fun getNumber(): Int = number
+    fun setNumber(n: Int) { number = n }
+
+    fun setVectorDrawable(drawable: VectorDrawable) {
+        vectorDrawable = drawable
+    }
+
+    fun updateIconDraw() {
+        invalidatePaints()
+    }
+
+    fun setTypeface(tf: Typeface, name: String) {
+        typeface = tf
+        fontName = name
+        invalidatePaints()
+    }
+
+    fun setColor(color: Int) {
+        textColor = color
+        invalidatePaints()
+    }
+
+    fun updateSize(canvasWidth: Int, ayaRect: RectF) {
+        rectF.left = ayaRect.left
+        rectF.top = ayaRect.top
+        rectF.right = ayaRect.right
+        rectF.bottom = ayaRect.bottom
+        createLayout(ayaRect.width().toInt())
+    }
+
+    fun updateSizeResize(canvasWidth: Int, ayaRect: RectF) {
+        updateSize(canvasWidth, ayaRect)
+    }
+
+    fun applyAll(canvasWidth: Int, rect: RectF, textSize: Float, factorSize: Float) {
+        this.textSize = textSize
+        this.factorSize = factorSize
+        rectF.left = rect.left
+        rectF.top = rect.top
+        rectF.right = rect.right
+        rectF.bottom = rect.bottom
+        invalidatePaints()
+        createLayout(rect.width().toInt())
+    }
 }

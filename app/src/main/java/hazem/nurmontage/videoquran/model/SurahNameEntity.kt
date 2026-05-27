@@ -7,10 +7,10 @@ import android.text.TextPaint
 import hazem.nurmontage.videoquran.constant.SurahNameStyle
 import java.io.Serializable
 
-class SurahNameEntity : EntityView(), Serializable {
+class SurahNameEntity : EntityView() {
 
     var surahName: String = ""
-    var fontName: String = "خط الإبل.otf"
+    var fontName: String = "\u062E\u0637 \u0627\u0644\u0625\u0628\u0644.otf"
     var typeface: Typeface? = null
     var textColor: Int = Color.WHITE
     var zaghrafatColor: Int = Color.parseColor("#FFD700")
@@ -52,6 +52,24 @@ class SurahNameEntity : EntityView(), Serializable {
         canvas.restore()
     }
 
+    override fun draw(canvas: Canvas) {
+        val layout = staticLayout ?: return
+        canvas.save()
+        canvas.translate(rectF.left, rectF.top)
+        layout.draw(canvas)
+        canvas.restore()
+    }
+
     fun invalidatePaints() { textPaint = null; zaghrafatPaint = null }
     override fun getType(): EntityType = EntityType.SURAH_NAME
+
+    // === BlurredImageView integration methods ===
+
+    override fun setRect(rect: RectF) {
+        rectF.left = rect.left
+        rectF.top = rect.top
+        rectF.right = rect.right
+        rectF.bottom = rect.bottom
+        createLayout(rect.width().toInt())
+    }
 }
