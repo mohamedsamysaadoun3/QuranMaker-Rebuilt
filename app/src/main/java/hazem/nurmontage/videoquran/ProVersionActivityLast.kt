@@ -110,7 +110,7 @@ class ProVersionActivityLast : BaseActivity(), PurchasesUpdatedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EdgeToEdge.enable(this)
-        setContentView(R.layout.activity_pro_version)
+        setContentView(R.layout.activity_pro_version_last)
         setStatusBarColor(-15658732)
         setNavigationBarColor(-15658732)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)

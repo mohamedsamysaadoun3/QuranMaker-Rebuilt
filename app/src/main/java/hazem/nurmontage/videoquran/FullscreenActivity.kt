@@ -59,15 +59,15 @@ class FullscreenActivity : BaseActivity() {
             this, Common.TEMPLATE_TMP
         ) != null
 
-        val intent = if (!hasCachedTemplate && !allPrefs.isNullOrEmpty()) {
-            // No cached template but has saved templates → go to template list
-            Intent(this, WorkUserActivity::class.java)
-        } else {
-            // Has cached template or no saved templates → go to engine
+        val nextIntent = if (hasCachedTemplate) {
+            // Has a cached template in progress → go to engine directly
             Intent(this, EngineActivity::class.java)
+        } else {
+            // No cached template → go to project list (home screen)
+            Intent(this, WorkUserActivity::class.java)
         }
 
-        startActivity(intent)
+        startActivity(nextIntent)
         finish()
     }
 

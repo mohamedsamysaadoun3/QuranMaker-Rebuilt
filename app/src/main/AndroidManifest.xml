@@ -203,6 +203,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ProVersionActivityLast"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".SupportBillingActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
