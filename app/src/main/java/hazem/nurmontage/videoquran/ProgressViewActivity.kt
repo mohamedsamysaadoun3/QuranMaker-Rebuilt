@@ -76,6 +76,7 @@ class ProgressViewActivity : BaseActivity() {
     private var statistics: Statistics? = null
     private var workerThread: Thread? = null
     private val overlay = StringBuilder()
+    private var overlayCount = 0
     private val renderManager = RenderManager()
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -623,22 +624,172 @@ class ProgressViewActivity : BaseActivity() {
     /**
      * Add bismilah overlay to the FFmpeg command.
      *
-     * NOTE: The original Java method had 3057 instructions that JADX could not decompile.
-     * This is a stub that should be filled in during Phase 7 (Engine/Render) when the
-     * full render pipeline is implemented.
+     * Builds FFmpeg filter chains for the bismilah text/animation overlay,
+     * including optional fade-in/fade-out transitions and pre-rendered
+     * intro/outro animation segments.
+     *
+     * @return the updated inputIndex after adding all new inputs
      */
     private fun addBasmala(
         entity: EntityBismilahTemplate,
         inputIndex: Int,
         semaphore: Semaphore,
         countDownLatch: CountDownLatch,
-        commandList: List<String>,
+        commandList: MutableList<String>,
         totalDurationSec: Float
     ): Int {
-        // TODO: Phase 7 — Full bismilah overlay FFmpeg command construction
-        // The original method was ~3057 instructions (JADX couldn't decompile).
-        // It builds FFmpeg filter chains for the bismilah text/animation overlay.
-        return inputIndex
+        val folder = mTemplate?.folder_template ?: return inputIndex
+
+        // 1. If entity has no file, return inputIndex unchanged
+        val entityFile = entity.file ?: return inputIndex
+
+        // 2. Get start and end times from the entity
+        val start = entity.start
+        val end = entity.end
+
+        // 3. Check if the bismilah image file exists at {folder_template}/{entity.file}
+        val bismilahFile = File(folder, entityFile)
+        if (!bismilahFile.exists()) return inputIndex
+
+        // 4. Check transition for fade effects
+        val transition = entity.transition
+        var fadeInEnabled = false
+        var fadeOutEnabled = false
+        var durationIn = 0f
+        var durationOut = 0f
+
+        transition?.let { tr ->
+            if (tr.isOut && tr.duration_out > 0f) {
+                fadeOutEnabled = true
+                durationOut = tr.duration_out
+            }
+            if (tr.isIn && tr.duration_in > 0f) {
+                fadeInEnabled = true
+                durationIn = tr.duration_in
+            }
+        }
+
+        var idx = inputIndex
+
+        // 5. If there's a file_in (animated intro), generate a video segment
+        if (!entity.file_in.isNullOrEmpty()) {
+            val fileInPath = "$folder/${entity.file_in}"
+            if (File(fileInPath).exists()) {
+                val animDuration = Math.max((end - start).toInt(), 1)
+                val fadePart = if (fadeInEnabled) ",fade=t=in:st=$start:d=$durationIn:alpha=1" else ""
+                val animFilter = "format=rgba$fadePart"
+                val animInPath = generateVideoSegment(entity, idx, animFilter, animDuration, countDownLatch, semaphore)
+                if (animInPath != null) {
+                    commandList.addAll(listOf("-i", animInPath))
+                    val animIdx = idx
+                    idx++
+                    // Overlay the intro animation
+                    val bgLabel = if (overlayCount == 0) "0:v" else "ov${overlayCount - 1}"
+                    overlay.append("[$bgLabel][$animIdx:v]overlay=x=${entity.x}:y=${entity.y}:enable='between(t,$start,$end)'[ov${overlayCount}];")
+                    overlayCount++
+                }
+            }
+        }
+
+        // 6. If there's a file_out (animated outro), generate a video segment
+        if (!entity.file_out.isNullOrEmpty()) {
+            val fileOutPath = "$folder/${entity.file_out}"
+            if (File(fileOutPath).exists()) {
+                val animDuration = Math.max((end - start).toInt(), 1)
+                val fadePart = if (fadeOutEnabled) ",fade=t=out:st=${end - durationOut}:d=$durationOut:alpha=1" else ""
+                val animFilter = "format=rgba$fadePart"
+                val animOutPath = generateVideoSegment(entity, idx, animFilter, animDuration, countDownLatch, semaphore)
+                if (animOutPath != null) {
+                    commandList.addAll(listOf("-i", animOutPath))
+                    val animIdx = idx
+                    idx++
+                    val bgLabel = if (overlayCount == 0) "0:v" else "ov${overlayCount - 1}"
+                    overlay.append("[$bgLabel][$animIdx:v]overlay=x=${entity.x}:y=${entity.y}:enable='between(t,$start,$end)'[ov${overlayCount}];")
+                    overlayCount++
+                }
+            }
+        }
+
+        // 7. Add main bismilah image as input
+        commandList.addAll(listOf("-i", bismilahFile.absolutePath))
+        val basmIdx = idx
+        idx++
+
+        // Build overlay filter with position and optional fade effects
+        val bgLabel = if (overlayCount == 0) "0:v" else "ov${overlayCount - 1}"
+
+        if (fadeInEnabled || fadeOutEnabled) {
+            // Apply fade filters to the bismilah input before overlay
+            val fadedLabel = "basm_faded_$basmIdx"
+            val fadeParts = mutableListOf<String>()
+            if (fadeInEnabled) {
+                fadeParts.add("fade=t=in:st=$start:d=$durationIn:alpha=1")
+            }
+            if (fadeOutEnabled) {
+                fadeParts.add("fade=t=out:st=${end - durationOut}:d=$durationOut:alpha=1")
+            }
+            overlay.append("[$basmIdx:v]${fadeParts.joinToString(",")}[$fadedLabel];")
+            overlay.append("[$bgLabel][$fadedLabel]overlay=x=${entity.x}:y=${entity.y}:enable='between(t,$start,$end)'[ov${overlayCount}];")
+        } else {
+            overlay.append("[$bgLabel][$basmIdx:v]overlay=x=${entity.x}:y=${entity.y}:enable='between(t,$start,$end)'[ov${overlayCount}];")
+        }
+        overlayCount++
+
+        // 8. Return the new inputIndex
+        return idx
+    }
+
+    /**
+     * Pre-render an animation segment from a bismilah image.
+     *
+     * Generates a .mov video by looping the entity's image file and applying
+     * the given filter (typically fade/transition effects). Uses the qtrle codec
+     * with argb pixel format for alpha channel support.
+     *
+     * @param entity  the bismilah entity whose image file is used as input
+     * @param index   sequential index used in the output filename
+     * @param filter  FFmpeg video filter string to apply
+     * @param durationSec duration of the output video in seconds
+     * @param countDownLatch latch to count down when rendering completes
+     * @param semaphore concurrency limiter for parallel renders
+     * @return path to the generated .mov file, or null on failure
+     */
+    private fun generateVideoSegment(
+        entity: EntityBismilahTemplate,
+        index: Int,
+        filter: String,
+        durationSec: Int,
+        countDownLatch: CountDownLatch,
+        semaphore: Semaphore
+    ): String? {
+        val folder = mTemplate?.folder_template ?: return null
+        renderManager.addTask("anim prerender", durationSec)
+        val outputPath = "$folder/bismilah_$index.mov"
+
+        val args = arrayListOf(
+            "-y", "-loop", "1", "-i", "$folder/${entity.file}",
+            "-vf", filter,
+            "-t", "${Math.max(durationSec, 1)}",
+            "-c:v", "qtrle", "-pix_fmt", "argb",
+            "-preset", "veryfast", "-avoid_negative_ts", "make_zero",
+            outputPath
+        )
+
+        try {
+            semaphore.acquire()
+            val sessionId = FFmpegKit.executeWithArgumentsAsync(
+                args.toTypedArray(),
+                { _ -> updateNext(countDownLatch, semaphore) },
+                null,
+                StatisticsCallback { _ -> }
+            ).sessionId
+            idFfmpeg.add(sessionId)
+            return outputPath
+        } catch (_: InterruptedException) {
+            renderManager.nextTask()
+            countDownLatch.countDown()
+            return null
+        }
     }
 
     // endregion
