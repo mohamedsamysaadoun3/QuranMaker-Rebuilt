@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="4dp">
-    <ImageView
-        android:id="@+id/iv_thumbnail"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:scaleType="centerCrop" />
-    <ImageView
-        android:id="@+id/iv_menu"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="top|end"
-        android:padding="4dp" />
-</FrameLayout>
+<RelativeLayout android:background="@drawable/round_light" android:padding="4dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.card.MaterialCardView android:layout_gravity="start|center" android:id="@+id/crd_iv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="5dp" android:layout_centerInParent="true" android:layout_alignParentStart="true" app:cardBackgroundColor="@color/white" app:cardCornerRadius="8dp" app:strokeWidth="0dp">
+        <ImageView android:layout_gravity="start|center" android:id="@+id/imageView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:scaleType="centerCrop" />
+        <ImageView android:layout_gravity="start|center|top" android:id="@+id/iv_ratio" android:focusable="false" android:visibility="gone" android:clickable="false" android:layout_width="15dp" android:layout_height="15dp" android:layout_margin="5dp" />
+    </com.google.android.material.card.MaterialCardView>
+    <hazem.nurmontage.videoquran.views.TextCustumFontBold android:textSize="14.0sp" android:textColor="@color/studio" android:id="@+id/tv_name" android:paddingLeft="5dp" android:paddingTop="4dp" android:paddingBottom="2dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:paddingStart="5dp" android:layout_toEndOf="@+id/crd_iv" />
+    <hazem.nurmontage.videoquran.views.TextCustumFont android:textSize="11.0sp" android:textColor="@color/studio" android:id="@+id/tv_date" android:paddingLeft="5dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@+id/tv_name" android:paddingStart="5dp" android:layout_toEndOf="@+id/crd_iv" />
+    <ImageButton android:layout_gravity="end|center" android:id="@+id/btn_menu" android:background="#00ffffff" android:layout_width="60dp" android:layout_height="30dp" android:src="@drawable/more_menu" android:scaleType="centerInside" android:layout_centerInParent="true" android:rotation="90.0" android:layout_alignParentEnd="true" app:tint="@color/studio" />
+</RelativeLayout>

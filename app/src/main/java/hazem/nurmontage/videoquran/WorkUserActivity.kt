@@ -86,10 +86,10 @@ class WorkUserActivity : BaseActivity() {
                     template.idTemplate = template.uri_video
                 }
                 intent.putExtra(Common.TEMPLATE, template.idTemplate)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                // removed FLAG_ACTIVITY_CLEAR_TOP to preserve back stack
                 startActivity(intent)
                 overridePendingTransition(0, 0)
-                finish()
+                // removed finish() to preserve back stack
             }
 
             override fun toMenu(template: Template, view: View, position: Int) {
@@ -117,7 +117,7 @@ class WorkUserActivity : BaseActivity() {
 
         findViewById<View>(R.id.btn_menu).setOnClickListener {
             startActivity(Intent(this, SeettingActivity::class.java))
-            finish()
+            // removed finish() to preserve back stack
         }
 
         if (!BillingPreferences.isSubscribed(this)) {
@@ -260,7 +260,7 @@ class WorkUserActivity : BaseActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             overridePendingTransition(0, 0)
-            finish()
+            // removed finish() to preserve back stack
         }
     }
 

@@ -56,7 +56,7 @@ class WorkUserAdabter(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: ImageView = view.findViewById(R.id.iv_thumbnail)
+        val imageView: ImageView = view.findViewById(R.id.imageView)
         private val btnMenu: ImageButton = view.findViewById(R.id.btn_menu)
         val ivRatio: ImageView = view.findViewById(R.id.iv_ratio)
         private val tvName: TextView = view.findViewById(R.id.tv_name)

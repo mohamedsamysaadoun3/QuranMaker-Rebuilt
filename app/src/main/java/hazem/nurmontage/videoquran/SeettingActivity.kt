@@ -50,8 +50,8 @@ class SeettingActivity : BaseActivity(), PurchasesUpdatedListener {
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            startActivity(Intent(this@SeettingActivity, WorkUserActivity::class.java))
-            overridePendingTransition(0, 0)
+            // just finish() - WorkUserActivity is already in the back stack
+            // no need for overridePendingTransition when finishing
             finish()
         }
     }
@@ -224,7 +224,7 @@ class SeettingActivity : BaseActivity(), PurchasesUpdatedListener {
         intent.putExtra("from_setting", true)
         startActivity(intent)
         overridePendingTransition(0, 0)
-        finish()
+        // removed finish() - preserve back stack for language change
     }
 
     private fun openMoreApps() {

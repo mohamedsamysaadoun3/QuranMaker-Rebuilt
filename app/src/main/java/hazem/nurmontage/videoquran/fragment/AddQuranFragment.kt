@@ -203,7 +203,7 @@ class AddQuranFragment() : Fragment() {
             // Setup surah spinner
             spinnerSurah = root.findViewById(R.id.sura_name)
             val surahAdapter = ArrayAdapter(requireContext(), R.layout.row_spinner_aya, arraySurah)
-            surahAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            surahAdapter.setDropDownViewResource(R.layout.row_spinner_dropdown)
 
             onSurahSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -256,7 +256,7 @@ class AddQuranFragment() : Fragment() {
             spinnerFrom = root.findViewById(R.id.aya_from)
             val fromAdapter = ArrayAdapter<String>(requireContext(), R.layout.row_spinner_aya)
             adapterFromAyah = fromAdapter
-            fromAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            fromAdapter.setDropDownViewResource(R.layout.row_spinner_dropdown)
 
             onFromAyaSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -283,13 +283,13 @@ class AddQuranFragment() : Fragment() {
             spinnerTo = root.findViewById(R.id.aya_to)
             val toAdapter = ArrayAdapter<String>(requireContext(), R.layout.row_spinner_aya)
             adapterToAyah = toAdapter
-            toAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            toAdapter.setDropDownViewResource(R.layout.row_spinner_dropdown)
             spinnerTo?.adapter = adapterToAyah
 
             // Setup reciters spinner
             spinnerReciters = root.findViewById(R.id.spinner_reciters)
             val recitersAdapter = ArrayAdapter(requireContext(), R.layout.row_spinner_aya, arrayReciters)
-            recitersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            recitersAdapter.setDropDownViewResource(R.layout.row_spinner_dropdown)
 
             spinnerReciters?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -306,7 +306,7 @@ class AddQuranFragment() : Fragment() {
             // Setup translation spinner
             spinnerTranslation = root.findViewById(R.id.spinner_translation)
             val translationAdapter = ArrayAdapter(requireContext(), R.layout.row_spinner_aya, arrayTranslation)
-            translationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            translationAdapter.setDropDownViewResource(R.layout.row_spinner_dropdown)
             spinnerTranslation?.adapter = translationAdapter
 
             layoutConnection = root.findViewById(R.id.hint_no_internet)

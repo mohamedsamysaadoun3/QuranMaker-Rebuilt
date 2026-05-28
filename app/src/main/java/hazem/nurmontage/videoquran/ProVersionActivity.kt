@@ -114,9 +114,7 @@ class ProVersionActivity : BaseActivity(), PurchasesUpdatedListener {
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (mTemplate != null) {
-                toTrackAct()
-            }
+            // Just finish to return to the calling activity in the back stack
             finish()
         }
     }

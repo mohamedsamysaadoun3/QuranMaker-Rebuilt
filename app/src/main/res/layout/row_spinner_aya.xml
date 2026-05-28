@@ -1,7 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_name"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:textSize="14sp" />
+<hazem.nurmontage.videoquran.views.TextCustumFont android:textSize="12.0sp" android:textColor="#ffdfdfdf" android:gravity="center" android:id="@+id/spinner_text" android:padding="5dp" android:layout_width="match_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -127,7 +127,7 @@ class VideoViewActivity : BaseActivity() {
 
         // Home button
         findViewById<View>(R.id.btn_home).setOnClickListener {
-            startActivity(Intent(this, WorkUserActivity::class.java))
+            startActivity(Intent(this, WorkUserActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
             finish()
         }
 

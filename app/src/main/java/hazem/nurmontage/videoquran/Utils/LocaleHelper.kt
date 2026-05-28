@@ -13,19 +13,31 @@ object LocaleHelper {
     private const val PREFS_NAME = "ActPreference"
     private const val KEY_USER_CHOICE = "userIsChoice"
 
-    fun onAttach(context: Context): Context =
-        setLocale(context, getPersistedData(context, getLanguage(context)))
+    fun onAttach(context: Context): Context {
+        val language = getPersistedData(context, "en")
+        return updateResourcesLegacy(context, language)
+    }
 
     fun getLanguage(context: Context): String =
         getPersistedData(context, "en")
 
+    /**
+     * Call this when user explicitly changes language.
+     * Uses AppCompatDelegate.setApplicationLocales() for the modern per-app language API.
+     */
     fun setLocale(language: String) {
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language))
+        val locale = Locale(language)
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
     }
 
+    /**
+     * Apply locale to context and persist the choice.
+     * Called from ChoiceLangActivity when user confirms language change.
+     */
     fun setLocale(context: Context, language: String): Context {
         persist(context, language)
-        return updateResources(context, language)
+        setLocale(language)
+        return updateResourcesLegacy(context, language)
     }
 
     fun getPersistedData(context: Context, defaultLanguage: String): String =
@@ -50,24 +62,20 @@ object LocaleHelper {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .getBoolean(KEY_USER_CHOICE, false)
 
-    fun updateResources(context: Context, language: String): Context {
+    /**
+     * Apply locale to context configuration for legacy Android versions.
+     * Does NOT call AppCompatDelegate.setApplicationLocales() to avoid double-wrapping
+     * with the attachBaseContext flow.
+     */
+    private fun updateResourcesLegacy(context: Context, language: String): Context {
         val locale = Locale(language)
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
+        Locale.setDefault(locale)
         val config = Configuration(context.resources.configuration)
-        config.setLocale(locale)
-        return context.createConfigurationContext(config)
-    }
-
-    fun updateResourcesLegacy(context: Context, language: String): Context {
-        val locale = Locale(language)
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(locale))
-        val resources = context.resources
-        val config = Configuration(resources.configuration)
         config.setLocale(locale)
         val newContext = context.createConfigurationContext(config)
         if (Build.VERSION.SDK_INT <= 24) {
             @Suppress("DEPRECATION")
-            resources.updateConfiguration(config, resources.displayMetrics)
+            context.resources.updateConfiguration(config, context.resources.displayMetrics)
         }
         return newContext
     }

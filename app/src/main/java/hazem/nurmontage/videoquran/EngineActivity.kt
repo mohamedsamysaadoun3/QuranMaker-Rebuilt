@@ -574,7 +574,10 @@ class EngineActivity : BaseActivity() {
     private fun initResolution() {
         seekBar_fps?.mListener = object : CustomDiscreteSeekBar.OnProgressChangeListener {
             override fun onProgressChanged(seekBar: CustomDiscreteSeekBar, index: Int, label: String, fromUser: Boolean) {
-                mTemplate?.fps = index
+                val fpsValues = intArrayOf(15, 25, 30, 50, 60)
+                if (index in fpsValues.indices) {
+                    mTemplate?.fps = fpsValues[index]
+                }
             }
             override fun onStartTrackingTouch(seekBar: CustomDiscreteSeekBar) {}
             override fun onStopTrackingTouch(seekBar: CustomDiscreteSeekBar) {}
@@ -585,7 +588,6 @@ class EngineActivity : BaseActivity() {
                     0 -> Pair(480, 854)
                     1 -> Pair(720, 1280)
                     2 -> Pair(1080, 1920)
-                    3 -> Pair(2160, 3840)
                     else -> Pair(720, 1280)
                 }
                 mTemplate?.width = dims.first
@@ -594,13 +596,27 @@ class EngineActivity : BaseActivity() {
                     0 -> "480p"
                     1 -> "720p"
                     2 -> "1080p"
-                    3 -> "4K"
                     else -> "720p"
                 }
             }
             override fun onStartTrackingTouch(seekBar: CustomDiscreteSeekBar) {}
             override fun onStopTrackingTouch(seekBar: CustomDiscreteSeekBar) {}
         }
+
+        // Initialize seekbar positions to match current template
+        val currentFps = mTemplate?.fps ?: 25
+        val fpsValues = intArrayOf(15, 25, 30, 50, 60)
+        val fpsIndex = fpsValues.indexOf(currentFps).let { if (it >= 0) it else 1 }
+        seekBar_fps?.setProgress(fpsIndex)
+
+        val currentWidth = mTemplate?.width ?: 720
+        val resIndex = when (currentWidth) {
+            480 -> 0
+            720 -> 1
+            1080 -> 2
+            else -> 1
+        }
+        seekBar_res?.setProgress(resIndex)
     }
 
     private fun initLaunchers() {
@@ -1640,7 +1656,9 @@ class EngineActivity : BaseActivity() {
     }
 
     fun toProVersion() {
-        startActivity(Intent(this, ProVersionActivity::class.java))
+        val intent = Intent(this, ProVersionActivity::class.java)
+        mTemplate?.idTemplate?.let { intent.putExtra(Common.TEMPLATE, it) }
+        startActivity(intent)
         overridePendingTransition(0, 0)
     }
 
@@ -1825,7 +1843,7 @@ class EngineActivity : BaseActivity() {
         }
 
         override fun onAddTranslation(translation: String, ayaNumber: Int, isEnglish: Boolean) {
-            addTranslationEntity(translation, ayaNumber, isEnglish)
+            runOnUiThread { addTranslationEntity(translation, ayaNumber, isEnglish) }
         }
 
         override fun onAdd(
@@ -1833,20 +1851,22 @@ class EngineActivity : BaseActivity() {
             translationComplete: String?, textLength: Int, ayaNumber: Int,
             icon: String, startWordIndex: Int, endWordIndex: Int
         ) {
-            addEntity(text, "", completeAya, translationWords ?: "", 0, ayaNumber, "", icon.toIntOrNull() ?: 0, 0)
+            runOnUiThread { addEntity(text, "", completeAya, translationWords ?: "", 0, ayaNumber, "", icon.toIntOrNull() ?: 0, 0) }
         }
 
         override fun onDone(
             surahHint: String, surahPosition: Int, readerName: String,
             uri: Uri, pathVideoCopy: String
         ) {
-            runOnUiThread { hideFragment() }
-            blurredImageView.updateSizeAya()
-            blurredImageView.updateSizeTrslAya()
-            if (pathVideoCopy.isEmpty()) {
-                addAudio(uri)
-            } else {
-                addAudioFromVideo(uri, pathVideoCopy)
+            runOnUiThread {
+                hideFragment()
+                blurredImageView.updateSizeAya()
+                blurredImageView.updateSizeTrslAya()
+                if (pathVideoCopy.isEmpty()) {
+                    addAudio(uri)
+                } else {
+                    addAudioFromVideo(uri, pathVideoCopy)
+                }
             }
         }
 
@@ -1854,13 +1874,13 @@ class EngineActivity : BaseActivity() {
             surahHint: String, surahPosition: Int, readerName: String,
             recitersModels: List<RecitersModel>
         ) {
-            runOnUiThread { hideFragment() }
-            blurredImageView.updateSizeAya()
-            blurredImageView.updateSizeTrslAya()
-            if (NetworkUtils.isNetworkAvailable(this@EngineActivity) && recitersModels.isNotEmpty()) {
-                addAudioReciters(recitersModels)
-            } else {
-                runOnUiThread {
+            runOnUiThread {
+                hideFragment()
+                blurredImageView.updateSizeAya()
+                blurredImageView.updateSizeTrslAya()
+                if (NetworkUtils.isNetworkAvailable(this@EngineActivity) && recitersModels.isNotEmpty()) {
+                    addAudioReciters(recitersModels)
+                } else {
                     updateTimeToEndAya()
                     updateBtnToEnd()
                     updateBtnToStart()
@@ -1870,12 +1890,14 @@ class EngineActivity : BaseActivity() {
         }
 
         override fun onBismilah() {
-            val isti3ada = addEntityIste3adha()
-            val bismilah = addEntityBissmilah()
-            trackViewEntity.translateToRight()
+            runOnUiThread {
+                addEntityIste3adha()
+                addEntityBissmilah()
+                trackViewEntity.translateToRight()
+            }
         }
 
-        override fun onCancel() { hideFragment() }
+        override fun onCancel() { runOnUiThread { hideFragment() } }
 
         override fun onErrorLimitation() {
             runOnUiThread {
@@ -1944,7 +1966,7 @@ class EngineActivity : BaseActivity() {
             blurredImageView.invalidate()
         }
 
-        override fun onCancel() { hideFragment() }
+        override fun onCancel() { runOnUiThread { hideFragment() } }
         override fun onDone() { hideFragment() }
     }
 
@@ -1967,7 +1989,7 @@ class EngineActivity : BaseActivity() {
             toCrop()
         }
         override fun onSubscribe() { dialogPremium(0) }
-        override fun onCancel() { hideFragment() }
+        override fun onCancel() { runOnUiThread { hideFragment() } }
         override fun onDone() { hideFragment() }
     }
 

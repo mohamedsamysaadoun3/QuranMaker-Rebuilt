@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@id/exo_play_pause"
+            android:id="@+id/exo_play_pause"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -23,7 +23,7 @@
             android:src="@drawable/play_arrow_24px" />
 
         <TextView
-            android:id="@id/exo_position"
+            android:id="@+id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -31,13 +31,13 @@
             android:textSize="12sp" />
 
         <View
-            android:id="@id/exo_progress"
+            android:id="@+id/exo_progress"
             android:layout_width="0dp"
             android:layout_height="24dp"
             android:layout_weight="1" />
 
         <TextView
-            android:id="@id/exo_duration"
+            android:id="@+id/exo_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

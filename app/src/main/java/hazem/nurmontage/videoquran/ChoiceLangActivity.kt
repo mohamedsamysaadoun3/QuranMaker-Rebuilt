@@ -21,7 +21,7 @@ class ChoiceLangActivity : BaseActivity() {
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            toStarWork()
+            finish() // simply go back to the previous activity in the stack
         }
     }
 
@@ -86,7 +86,7 @@ class ChoiceLangActivity : BaseActivity() {
         }
 
         tvCancel.setOnClickListener {
-            toStarWork()
+            finish() // just go back
         }
     }
 
@@ -114,16 +114,15 @@ class ChoiceLangActivity : BaseActivity() {
 
     private fun start() {
         if (LocaleHelper.getLanguage(this) == lang) {
-            startActivity(Intent(this, SeettingActivity::class.java))
-            @Suppress("DEPRECATION")
-            overridePendingTransition(0, 0)
+            // Language unchanged, just go back to the previous activity
             finish()
             return
         }
 
+        // Persist the language choice
         LocaleHelper.persist(applicationContext, lang)
-        LocaleHelper.onAttach(this)
-        recreate()
+        // Apply locale via AppCompatDelegate (handles modern per-app language API)
+        LocaleHelper.setLocale(lang)
 
         val intent = Intent(this, FullscreenActivity::class.java)
         intent.putExtra("from_setting", true)
