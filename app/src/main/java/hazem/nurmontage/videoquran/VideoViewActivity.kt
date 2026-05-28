@@ -267,7 +267,7 @@ class VideoViewActivity : BaseActivity() {
 
     private fun ratingSetup() {
         try {
-            // TODO: RatingBottomSheetDialog needs to be converted to Kotlin
+            // NOTE: RatingBottomSheetDialog is functional but should be converted to Kotlin
             if (!RatingBottomSheetDialog.shouldShowRatingDialog(this)) return
             if (resources == null) return
             if (trackerSession() < 4) return

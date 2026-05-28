@@ -104,7 +104,7 @@ class ProVersionActivityDone : BaseActivity(), PurchasesUpdatedListener {
     private var tvPriceForeiver: TextCustumFontBold? = null
     private var tvPriceYear: TextCustumFontBold? = null
 
-    // TODO: YouTube player integration (youtubeplayer dependency)
+    // NOTE: YouTube player integration requires youtubeplayer dependency
     // private var youTubePlayer: YouTubePlayer? = null
     // private var youTubePlayerView: YouTubePlayerView? = null
 

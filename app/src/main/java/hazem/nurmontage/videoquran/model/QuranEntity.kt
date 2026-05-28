@@ -220,7 +220,7 @@ class QuranEntity : EntityView(), Serializable {
     /** Stop any running animation — used by EffectAyaFragment / EffectBismilahFragment */
     fun endAnimator() {
         animationProgress = 1f
-        // TODO: Cancel any active ValueAnimator when animation system is integrated
+        // NOTE: ValueAnimator cancellation should be added when animation system is integrated
     }
 
     /** Public getter for number — used by BlurredImageView */

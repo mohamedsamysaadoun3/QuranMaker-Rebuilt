@@ -154,7 +154,7 @@ class ReverbePresetFragment() : Fragment() {
             reverbeList.add(Reverbe(getString(R.string.reverb_tiled_room), "aecho=0.9:0.4:600|1200:0.20|0.15"))
             reverbeList.add(Reverbe(getString(R.string.reverb_deep), "aecho=0.6:0.35:1000:0.20"))
 
-            // TODO: ReverbeAdabter needs to be implemented
+            // NOTE: ReverbeAdabter is already implemented in adabter/
             recyclerView.adapter = ReverbeAdabter(
                 reverbeList,
                 iReverbPresetCallback,

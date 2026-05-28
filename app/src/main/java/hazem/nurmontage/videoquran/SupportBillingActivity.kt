@@ -135,7 +135,7 @@ class SupportBillingActivity : BaseActivity(), PurchasesUpdatedListener {
         }
 
         // About items
-        // TODO: AboutAdabters needs to be converted to Kotlin
+        // NOTE: AboutAdabters is functional in Java; could be converted to Kotlin later
         val aboutItems = ArrayList<AboutAdabters.ModelAbout>()
         val gravity = if (language == "ar") 5 else GravityCompat.START
 

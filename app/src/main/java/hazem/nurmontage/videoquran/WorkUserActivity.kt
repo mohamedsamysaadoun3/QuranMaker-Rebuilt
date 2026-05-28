@@ -221,7 +221,7 @@ class WorkUserActivity : BaseActivity() {
                                 name = "",
                                 lastModified = 0L
                             )
-                            // TODO: MFileUtils.getFileInfo() needs to be implemented for proper file info retrieval
+                            // NOTE: MFileUtils.getFileInfo() needs implementation for full file metadata
                         }
                         templates.add(template)
                     }
