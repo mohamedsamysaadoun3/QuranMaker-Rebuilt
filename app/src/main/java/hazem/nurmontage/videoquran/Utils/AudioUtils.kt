@@ -54,11 +54,37 @@ object AudioUtils {
     }
 
     fun downloadFile(context: android.content.Context, url: String, folder: String): String? {
-        // TODO: Phase 7 - Download file from URL
-        return null
+        return try {
+            val dir = File(context.filesDir, folder)
+            dir.mkdirs()
+            val fileName = url.substringAfterLast("/", "download_${'$'}{System.currentTimeMillis()}")
+            val outFile = File(dir, fileName)
+            URL(url).openStream().use { input ->
+                FileOutputStream(outFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            outFile.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
     fun copyFromUri(context: android.content.Context, uri: android.net.Uri, folder: String): String? {
-        // TODO: Phase 7 - Copy file from URI
-        return null
+        return try {
+            val dir = File(context.filesDir, folder)
+            dir.mkdirs()
+            val fileName = uri.lastPathSegment ?: "file_${'$'}{System.currentTimeMillis()}"
+            val outFile = File(dir, fileName)
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                FileOutputStream(outFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            outFile.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

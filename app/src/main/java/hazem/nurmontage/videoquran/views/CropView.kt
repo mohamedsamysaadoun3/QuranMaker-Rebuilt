@@ -274,8 +274,7 @@ class CropView @JvmOverloads constructor(
     }
 
     fun croppedBitmap(): android.graphics.Bitmap? {
-        // TODO: Phase 7 - Return the cropped bitmap
-        return null
+        return getCroppedBitmap()
     }
     
     fun rectSquare(): android.graphics.RectF {

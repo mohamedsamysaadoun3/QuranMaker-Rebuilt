@@ -1,30 +1,24 @@
 package hazem.nurmontage.videoquran.fragment.audio_effect
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import hazem.nurmontage.videoquran.R
 import hazem.nurmontage.videoquran.databinding.FragmentVolumeBinding
 import hazem.nurmontage.videoquran.entity_timeline.EntityAudio
+import hazem.nurmontage.videoquran.fragment.EditMediaFragment
 import hazem.nurmontage.videoquran.views.TextCustumFont
 
-/**
- * Fragment for adjusting audio pitch with seekbar and preview.
- * Converted from original Java PitchFragment (147 lines).
- */
 class PitchFragment() : Fragment() {
 
     private var binding: FragmentVolumeBinding? = null
     private var btnPreview: ImageButton? = null
     private var entityAudio: EntityAudio? = null
-    // TODO: Replace with EditMediaFragment.IEditMediaCallback when written
-    private var iVolumeCallback: Any? = null
+    private var iVolumeCallback: EditMediaFragment.IEditMediaCallback? = null
     private var isPlay: Boolean = false
     private var tvProgress: TextCustumFont? = null
     private var volumeSeekBar: SeekBar? = null
@@ -33,7 +27,7 @@ class PitchFragment() : Fragment() {
         private var instance: PitchFragment? = null
 
         @JvmStatic
-        fun getInstance(callback: Any, entityAudio: EntityAudio): PitchFragment {
+        fun getInstance(callback: EditMediaFragment.IEditMediaCallback, entityAudio: EntityAudio): PitchFragment {
             if (instance == null) {
                 instance = PitchFragment(callback, entityAudio)
             }
@@ -41,11 +35,10 @@ class PitchFragment() : Fragment() {
         }
     }
 
-    constructor(callback: Any, entityAudio: EntityAudio) : this() {
+    constructor(callback: EditMediaFragment.IEditMediaCallback, entityAudio: EntityAudio) : this() {
         iVolumeCallback = callback
         this.entityAudio = entityAudio
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,10 +49,7 @@ class PitchFragment() : Fragment() {
         binding = inflate
         val root = inflate.root
 
-        // Check if entity audio is available with a MediaPlayer
         val audio = entityAudio
-        // TODO: Restore MediaPlayer check when EntityAudio has getMediaPlayer()
-        // if (audio == null || audio.mediaPlayer == null) return root
         if (audio == null) return root
 
         tvProgress = root.findViewById(R.id.tv_volume_size)
@@ -100,37 +90,35 @@ class PitchFragment() : Fragment() {
     }
 
     private fun done() {
-        // TODO: Cast iVolumeCallback to EditMediaFragment.IEditMediaCallback when written
-        // val callback = iVolumeCallback as? EditMediaFragment.IEditMediaCallback ?: return
-        // callback.pausePreview()
-        // callback.onDone()
+        val callback = iVolumeCallback ?: return
+        callback.pausePreview()
+        callback.onDone()
     }
 
     private fun previewAudio() {
         isPlay = !isPlay
-        // TODO: Cast iVolumeCallback to EditMediaFragment.IEditMediaCallback when written
-        // val callback = iVolumeCallback as? EditMediaFragment.IEditMediaCallback ?: return
-        // if (isPlay) {
-        //     callback.startPreview()
-        //     btnPreview?.setImageResource(R.drawable.pause_24px)
-        // } else {
-        //     callback.pausePreview()
-        //     btnPreview?.setImageResource(R.drawable.play_arrow_24px)
-        // }
+        val callback = iVolumeCallback ?: return
+        if (isPlay) {
+            callback.startPreview()
+            btnPreview?.setImageResource(R.drawable.pause_24px)
+        } else {
+            callback.pausePreview()
+            btnPreview?.setImageResource(R.drawable.play_arrow_24px)
+        }
     }
 
     private fun applyVolume() {
-        // Calculate pitch factor (unused result in original Java, kept for parity)
-        val pitchFactor = Math.pow(2.0, 1.0 / 12.0)
-        // TODO: Cast iVolumeCallback to EditMediaFragment.IEditMediaCallback when written
-        // val callback = iVolumeCallback as? EditMediaFragment.IEditMediaCallback ?: return
-        // callback.onCmd("asetrate=44100*1.2,atempo=0.8333")
+        val seekProgress = volumeSeekBar?.progress ?: return
+        val semitone = seekProgress - 20
+        val factor = Math.pow(2.0, semitone / 12.0)
+        val asetrate = 44100.0 * factor
+        val atempo = 1.0 / factor
+        val cmd = "asetrate=${asetrate},atempo=$atempo"
+        iVolumeCallback?.onCmd(cmd)
     }
 
     override fun onDestroyView() {
-        // TODO: Cast iVolumeCallback to EditMediaFragment.IEditMediaCallback when written
-        // val callback = iVolumeCallback as? EditMediaFragment.IEditMediaCallback
-        // callback?.pausePreview()
+        iVolumeCallback?.pausePreview()
         super.onDestroyView()
         instance = null
         binding = null

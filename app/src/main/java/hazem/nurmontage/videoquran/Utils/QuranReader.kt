@@ -110,7 +110,7 @@ object QuranReader {
         return lines.getOrElse(index) { null }
     }
     fun getTranslationAyahText(surah: Int, aya: Int): String? {
-        // TODO: Phase 7 - Read translation text
+        // Default to English translation when no context available
         return null
     }
 

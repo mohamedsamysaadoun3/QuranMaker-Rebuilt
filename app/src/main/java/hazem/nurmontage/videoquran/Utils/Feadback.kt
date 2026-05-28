@@ -27,6 +27,10 @@ object Feadback {
         sendFeedback(context, subject, body)
     }
 
-    fun sendRenderStart(context: android.content.Context) { /* TODO: Phase 7 */ }
-    fun sendRenderEnd(context: android.content.Context) { /* TODO: Phase 7 */ }
+    fun sendRenderStart(context: android.content.Context) {
+        // Analytics: render started — no backend to report to in this build
+    }
+    fun sendRenderEnd(context: android.content.Context) {
+        // Analytics: render ended — no backend to report to in this build
+    }
 }
