@@ -1,8 +1,8 @@
 package nl.dionsegijn.konfetti.core
 
 object Angle {
-    const val LEFT: Int = 180
-    const val RIGHT: Int = 0
-    const val TOP: Int = 270
-    const val BOTTOM: Int = 90
+    const val RIGHT = 0
+    const val BOTTOM = 90
+    const val LEFT = 180
+    const val TOP = 270
 }

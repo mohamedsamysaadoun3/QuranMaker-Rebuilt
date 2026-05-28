@@ -1,17 +1,96 @@
 package nl.dionsegijn.konfetti.core
-import nl.dionsegijn.konfetti.core.emitter.Emitter
-import nl.dionsegijn.konfetti.core.Absolute
-class PartyFactory(private val emitter: Emitter) {
-    private var spread: Spread = Spread.WIDE
-    private var shapes: List<Any> = listOf()
-    private var colors: List<Int> = listOf()
-    private var speedMin: Float = 0f
-    private var speedMax: Float = 10f
-    private var position: Position = Absolute(0, 0)
-    fun spread(spread: Spread): PartyFactory { this.spread = spread; return this }
-    fun shapes(shapes: List<Any>): PartyFactory { this.shapes = shapes; return this }
-    fun colors(colors: List<Int>): PartyFactory { this.colors = colors; return this }
-    fun setSpeedBetween(min: Float, max: Float): PartyFactory { speedMin = min; speedMax = max; return this }
-    fun position(position: Position): PartyFactory { this.position = position; return this }
-    fun getParty(): Any = Unit
+
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig
+import nl.dionsegijn.konfetti.core.models.Shape
+import nl.dionsegijn.konfetti.core.models.Size
+
+class PartyFactory(private val emitter: EmitterConfig) {
+    private var party: Party = Party(emitter = emitter)
+
+    fun angle(angle: Int): PartyFactory {
+        party = party.copy(angle = angle)
+        return this
+    }
+
+    fun spread(spread: Int): PartyFactory {
+        party = party.copy(spread = spread)
+        return this
+    }
+
+    fun setSpeed(speed: Float): PartyFactory {
+        party = party.copy(speed = speed)
+        return this
+    }
+
+    fun setSpeedBetween(minSpeed: Float, maxSpeed: Float): PartyFactory {
+        party = party.copy(speed = minSpeed, maxSpeed = maxSpeed)
+        return this
+    }
+
+    fun setDamping(damping: Float): PartyFactory {
+        party = party.copy(damping = damping)
+        return this
+    }
+
+    fun position(position: Position): PartyFactory {
+        party = party.copy(position = position)
+        return this
+    }
+
+    fun position(x: Float, y: Float): PartyFactory {
+        party = party.copy(position = Position.Absolute(x, y))
+        return this
+    }
+
+    fun position(x: Double, y: Double): PartyFactory {
+        party = party.copy(position = Position.Relative(x, y))
+        return this
+    }
+
+    fun sizes(vararg sizes: Size): PartyFactory {
+        party = party.copy(size = sizes.toList())
+        return this
+    }
+
+    fun sizes(size: List<Size>): PartyFactory {
+        party = party.copy(size = size)
+        return this
+    }
+
+    fun colors(colors: List<Int>): PartyFactory {
+        party = party.copy(colors = colors)
+        return this
+    }
+
+    fun shapes(shapes: List<Shape>): PartyFactory {
+        party = party.copy(shapes = shapes)
+        return this
+    }
+
+    fun shapes(vararg shapes: Shape): PartyFactory {
+        party = party.copy(shapes = shapes.toList())
+        return this
+    }
+
+    fun timeToLive(timeToLive: Long): PartyFactory {
+        party = party.copy(timeToLive = timeToLive)
+        return this
+    }
+
+    fun fadeOutEnabled(fadeOutEnabled: Boolean): PartyFactory {
+        party = party.copy(fadeOutEnabled = fadeOutEnabled)
+        return this
+    }
+
+    fun delay(delay: Int): PartyFactory {
+        party = party.copy(delay = delay)
+        return this
+    }
+
+    fun rotation(rotation: Rotation): PartyFactory {
+        party = party.copy(rotation = rotation)
+        return this
+    }
+
+    fun getParty(): Party = party
 }
