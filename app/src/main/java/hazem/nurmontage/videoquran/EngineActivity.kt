@@ -97,8 +97,8 @@ class EngineActivity : BaseActivity() {
     lateinit var tv_resolution: TextCustumFont
     lateinit var tv_tittle_fragment: TextCustumFont
     lateinit var textChangeResize: TextCustumFont
-    lateinit var seekBar_fps: CustomDiscreteSeekBar
-    lateinit var seekBar_res: CustomDiscreteSeekBar
+    var seekBar_fps: CustomDiscreteSeekBar? = null
+    var seekBar_res: CustomDiscreteSeekBar? = null
     lateinit var layout_resolution: LinearLayout
 
     // ── State ──────────────────────────────────────────────────────────
@@ -135,6 +135,10 @@ class EngineActivity : BaseActivity() {
     private var timelineAnimatorListener: SmoothTimelineAnimator.AnimatorListener? = null
     private var smoothTimelineAnimator: SmoothTimelineAnimator? = null
     private var smoothVideoAnimator: SmoothVideoAnimator? = null
+
+    // ── Managers ────────────────────────────────────────────────────
+    private lateinit var audioManager: EngineAudioManager
+    private lateinit var backgroundManager: EngineBackgroundManager
 
     // ── Activity Result Launchers ──────────────────────────────────────
     private lateinit var activityLauncher: ActivityResultLauncher<Intent>
@@ -193,8 +197,8 @@ class EngineActivity : BaseActivity() {
         showProgress()
         loadTemplate()
         initLaunchers()
-        initTimeLineView()
         initViews()
+        initTimeLineView()
         checkUriShared()
     }
 
@@ -390,10 +394,13 @@ class EngineActivity : BaseActivity() {
         tv_resolution = findViewById(R.id.tv_resolution)
         tv_tittle_fragment = findViewById(R.id.tv_tittle_fragment)
         textChangeResize = findViewById(R.id.tv_ratio)
-        // seekBar_fps and seekBar_res are not in the layout - use layout_resolution directly
-        // seekBar_fps = findViewById(R.id.seek_bar_fps)
-        // seekBar_res = findViewById(R.id.seek_bar_res)
+        seekBar_fps = findViewById(R.id.seekbar_fps)
+        seekBar_res = findViewById(R.id.seekbar_resolution)
         layout_resolution = findViewById(R.id.layout_resolution)
+
+        // Initialize managers
+        audioManager = EngineAudioManager(this)
+        backgroundManager = EngineBackgroundManager(this, executor)
 
         // Play/Pause
         btnPlayPause.setOnClickListener {
@@ -565,14 +572,14 @@ class EngineActivity : BaseActivity() {
     }
 
     private fun initResolution() {
-        seekBar_fps.mListener = object : CustomDiscreteSeekBar.OnProgressChangeListener {
+        seekBar_fps?.mListener = object : CustomDiscreteSeekBar.OnProgressChangeListener {
             override fun onProgressChanged(seekBar: CustomDiscreteSeekBar, index: Int, label: String, fromUser: Boolean) {
                 mTemplate?.fps = index
             }
             override fun onStartTrackingTouch(seekBar: CustomDiscreteSeekBar) {}
             override fun onStopTrackingTouch(seekBar: CustomDiscreteSeekBar) {}
         }
-        seekBar_res.mListener = object : CustomDiscreteSeekBar.OnProgressChangeListener {
+        seekBar_res?.mListener = object : CustomDiscreteSeekBar.OnProgressChangeListener {
             override fun onProgressChanged(seekBar: CustomDiscreteSeekBar, index: Int, label: String, fromUser: Boolean) {
                 val dims = when (index) {
                     0 -> Pair(480, 854)
@@ -2277,12 +2284,19 @@ class EngineActivity : BaseActivity() {
 
     // ── Crop ───────────────────────────────────────────────────────────
 
-    private fun toCrop() {
+    fun toCrop() {
         try {
+            val template = mTemplate ?: return
             val intent = Intent(this, CropBitmapActivity::class.java)
-            intent.putExtra("uri", uri_bg)
+            intent.putExtra("uri_bg", uri_bg)
             launchCropActivity.launch(intent)
         } catch (e: Exception) { e.printStackTrace() }
+    }
+
+    // ── Layout Resolution ───────────────────────────────────────────
+
+    fun hideLayoutResolution() {
+        layout_resolution.visibility = View.GONE
     }
 
     // ── Update Progress ────────────────────────────────────────────────
