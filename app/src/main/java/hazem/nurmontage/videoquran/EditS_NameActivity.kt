@@ -31,7 +31,7 @@ import hazem.nurmontage.videoquran.views.TextCustumFontBold
  */
 class EditS_NameActivity : BaseActivity() {
 
-    // TODO: ColorBgAdabter needs to be converted to Kotlin
+    // ColorBgAdabter is available in adabter package
     private var adapter: ColorBgAdabter? = null
     private lateinit var checkBg: CheckboxCustumFont
     private var clrBg: Int = ViewCompat.MEASURED_STATE_MASK

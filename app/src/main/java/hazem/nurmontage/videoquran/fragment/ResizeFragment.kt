@@ -7,41 +7,32 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import hazem.nurmontage.videoquran.R
 import hazem.nurmontage.videoquran.Utils.ScreenUtils
 import hazem.nurmontage.videoquran.Utils.Utils
+import hazem.nurmontage.videoquran.adabter.DimensionAdabters
 import hazem.nurmontage.videoquran.common.DataDimension
 import hazem.nurmontage.videoquran.databinding.FragmentResizeBinding
 import hazem.nurmontage.videoquran.model.ItemDimension
 
-/**
- * Fragment for selecting video output dimension/resize preset.
- * Converted from original Java ResizeFragment (119 lines).
- */
 class ResizeFragment() : Fragment() {
 
-    // TODO: Replace with actual adapter when DimensionAdabters is written
-    // private var adabter: DimensionAdabters? = null
-    private var adabterRef: Any? = null
+    private var adapter: DimensionAdabters? = null
     private var binding: FragmentResizeBinding? = null
-    // TODO: Replace with actual callback type when DimensionAdabters is written
-    // private var iDimensionCallback: DimensionAdabters.IDimensionCallback? = null
-    private var iDimensionCallback: Any? = null
+    private var iDimensionCallback: DimensionAdabters.IDimensionCallback? = null
     private var posSelectResize: Int = -1
     private var recyclerView: RecyclerView? = null
     private var res: Resources? = null
     private var selectResize: String? = null
 
-
     companion object {
         private var instance: ResizeFragment? = null
 
         @JvmStatic
-        fun getInstance(callback: Any, resources: Resources, selectResize: String): ResizeFragment {
+        fun getInstance(callback: DimensionAdabters.IDimensionCallback, resources: Resources, selectResize: String): ResizeFragment {
             if (instance == null) {
                 instance = ResizeFragment(callback, resources, selectResize)
             }
@@ -49,7 +40,7 @@ class ResizeFragment() : Fragment() {
         }
     }
 
-    constructor(callback: Any, resources: Resources, selectResize: String) : this() {
+    constructor(callback: DimensionAdabters.IDimensionCallback, resources: Resources, selectResize: String) : this() {
         iDimensionCallback = callback
         this.selectResize = selectResize
         res = resources
@@ -58,11 +49,8 @@ class ResizeFragment() : Fragment() {
     fun scrollToSelectedPosition() {
         try {
             val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager ?: return
-            // TODO: Use adapter method when DimensionAdabters is implemented
-            // layoutManager.scrollToPositionWithOffset(
-            //     (adabterRef as DimensionAdabters).selected,
-            //     (recyclerView!!.width / 2) - 50
-            // )
+            val pos = adapter?.getSelected() ?: return
+            layoutManager.scrollToPositionWithOffset(pos, (recyclerView!!.width / 2) - 50)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -79,7 +67,7 @@ class ResizeFragment() : Fragment() {
 
         if (res != null && iDimensionCallback != null) {
             root.findViewById<View>(R.id.btn_done).setOnClickListener {
-                // TODO: Call iDimensionCallback.done() when DimensionAdabters is implemented
+                iDimensionCallback?.done()
             }
 
             recyclerView = root.findViewById(R.id.rv)
@@ -90,27 +78,23 @@ class ResizeFragment() : Fragment() {
             val allDimensions = DataDimension.getALl(res!!)
             val dimensionPairs = getListDimension(activity, allDimensions)
 
-            // TODO: Uncomment when DimensionAdabters is implemented
-            // val adapter = DimensionAdabters(
-            //     allDimensions,
-            //     iDimensionCallback as DimensionAdabters.IDimensionCallback,
-            //     dimensionPairs,
-            //     posSelectResize
-            // )
-            // adabterRef = adapter
-            // recyclerView?.adapter = adapter
-            // if (posSelectResize > 0) {
-            //     recyclerView?.scrollToPosition(posSelectResize - 1)
-            // } else {
-            //     recyclerView?.scrollToPosition(posSelectResize)
-            // }
+            val dimAdapter = DimensionAdabters(
+                allDimensions,
+                iDimensionCallback,
+                dimensionPairs,
+                posSelectResize
+            )
+            adapter = dimAdapter
+            recyclerView?.adapter = dimAdapter
+            if (posSelectResize > 0) {
+                recyclerView?.scrollToPosition(posSelectResize - 1)
+            } else {
+                recyclerView?.scrollToPosition(posSelectResize)
+            }
         }
         return root
     }
 
-    /**
-     * Computes preview dimension pairs for each item and finds the selected index.
-     */
     fun getListDimension(activity: Activity?, list: List<ItemDimension>): List<Pair<Int, Int>> {
         val screenWidth = (ScreenUtils.getScreenWidth(activity!!) * 0.27f).toInt()
         val result = mutableListOf<Pair<Int, Int>>()
@@ -126,6 +110,8 @@ class ResizeFragment() : Fragment() {
 
     override fun onDestroyView() {
         iDimensionCallback = null
+        adapter?.clear()
+        adapter = null
         instance = null
         binding?.root?.removeAllViews()
         binding = null

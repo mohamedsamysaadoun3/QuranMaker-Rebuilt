@@ -98,7 +98,7 @@ class GalleryVideoFragment() : Fragment() {
         recyclerView.isDrawingCacheEnabled = true
         recyclerView.itemAnimator = null
 
-        // TODO: GalleryVideoAdabters needs to be implemented
+        // GalleryVideoAdabters is already implemented
         val galleryVideoAdabters = GalleryVideoAdabters(
             AppUtils.getAppVersionName(requireContext()),
             resources,

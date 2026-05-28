@@ -84,7 +84,7 @@ class ColorBismilahFragment() : Fragment() {
 
         if (iEditSName != null && entitySelect != null && resourcesRef != null) {
             recyclerView = root.findViewById(R.id.rv_color)
-            // TODO: ColorAdabter needs to be implemented
+            // ColorAdabter is already implemented
             adapter = ColorAdabter(
                 iColor!!,
                 Common.MUSLIM_AYA_COLORS,

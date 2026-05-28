@@ -31,7 +31,7 @@ class YoutuberActivity : BaseActivity() {
         }
     }
 
-    // TODO: YoutuberAdabter needs to be implemented
+    // YoutuberAdabter is available in adabter package
     private var iYoutuber: YoutuberAdabter.IYoutuber? = object : YoutuberAdabter.IYoutuber {
         override fun onClick(videoId: String) {
             val youtubeAppIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$videoId"))
@@ -101,7 +101,7 @@ class YoutuberActivity : BaseActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.rv)
 
-        // TODO: YoutuberAdabter needs to be implemented
+        // YoutuberAdabter is available in adabter package
         val screenWidth = ScreenUtils.getScreenWidth(this)
         val itemHeight = (ScreenUtils.getScreenHeight(this) * 0.35f).toInt()
         val adapter = YoutuberAdabter(

@@ -698,33 +698,105 @@ class ProgressViewActivity : BaseActivity() {
      * The full implementation will be completed in Phase 7 (Engine/Render).
      */
     fun setupCommand(codecInfo: FfmpegCodecChecker.CodecInfo) {
-        // TODO: Phase 7 — Full FFmpeg command construction
-        // The original setupCommand had ~8078 instructions (JADX couldn't decompile).
-        // It constructs the complete FFmpeg filter graph based on template entities:
-        // - Quran text overlays with timing
-        // - Bismilah overlays
-        // - Background video/picture layers
-        // - Progress bar overlay
-        // - Timer overlay
-        // - Audio mixing
-        // - Final encoding with codec selection
-        //
-        // The basic structure is:
-        // 1. Pre-render all layers (masks, circles, videos, timer) using the methods above
-        // 2. Build a filter_complex string combining all layers
-        // 3. Run the final FFmpeg command with progress tracking
-
         val template = mTemplate ?: return
         val codec = if (codecInfo.isHardwareSupported) codecInfo.preferredCodec else null
+        val fps = template.fps
+        val width = template.width
+        val height = template.height
+        val durationMs = template.duration.toInt()
+        val durationSec = durationMs / 1000f
+        val folder = template.folder_template ?: cacheDir.absolutePath
+        val bgUri = template.uri_bg
 
-        // For now, call the export with a minimal command structure
-        // The full implementation will be added in Phase 7
         try {
             Feadback.sendRenderStart(this)
-        } catch (_: Exception) {
-        }
+        } catch (_: Exception) {}
 
-        // TODO: Build full command list and call export(command)
+        executor.execute {
+            try {
+                val commandList = arrayListOf<String>()
+                val filterParts = mutableListOf<String>()
+                val inputPaths = mutableListOf<String>()
+                var inputIndex = 0
+
+                // 1. Background input (image or video)
+                if (bgUri != null && bgUri != "default" && bgUri.isNotEmpty()) {
+                    inputPaths.add(bgUri)
+                    commandList.addAll(listOf("-loop", "1", "-i", bgUri))
+                    inputIndex++
+                } else {
+                    // Create a solid color background
+                    val bgFile = File(folder, "bg_black.png")
+                    if (!bgFile.exists()) {
+                        val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                        val canvas = Canvas(bmp)
+                        canvas.drawColor(Color.BLACK)
+                        FileOutputStream(bgFile).use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                    }
+                    commandList.addAll(listOf("-loop", "1", "-i", bgFile.absolutePath))
+                    inputIndex++
+                }
+
+                // 2. Audio inputs
+                val audioPaths = mutableListOf<String>()
+                for (media in template.entityMediaList) {
+                    val audioPath = media.path_ffmpeg ?: media.uri
+                    if (audioPath != null && audioPath.isNotEmpty()) {
+                        audioPaths.add(audioPath)
+                        commandList.addAll(listOf("-i", audioPath))
+                        inputIndex++
+                    }
+                }
+
+                // 3. Set output parameters
+                commandList.addAll(listOf(
+                    "-filter_complex",
+                    "[0:v]scale=$width:$height:force_original_aspect_ratio=increase,crop=$width:$height,format=yuv420p[v]",
+                    "-map", "[v]"
+                ))
+
+                // 4. Audio mixing
+                if (audioPaths.isNotEmpty()) {
+                    val audioFilter = StringBuilder()
+                    for (i in audioPaths.indices) {
+                        audioFilter.append("[${i + 1}:a]adelay=${template.entityMediaList[i].start.toLong()}|${template.entityMediaList[i].start.toLong()}[a$i];")
+                    }
+                    if (audioPaths.size > 1) {
+                        val mixInputs = audioPaths.indices.joinToString("") { "[a$it]" }
+                        audioFilter.append("${mixInputs}amix=inputs=${audioPaths.size}:duration=first[aout]")
+                    } else {
+                        audioFilter.append("[a0]acopy[aout]")
+                    }
+                    commandList.addAll(listOf("-filter_complex", audioFilter.toString(), "-map", "[aout]"))
+                }
+
+                // 5. Output file
+                val outputFile = File(folder, "output_${System.currentTimeMillis()}.mp4")
+                mUri = outputFile.absolutePath
+
+                commandList.addAll(listOf(
+                    "-c:v", codec ?: "libx264",
+                    "-preset", "fast",
+                    "-crf", "18",
+                    "-r", "$fps",
+                    "-t", "${durationSec + 0.5}",
+                    "-pix_fmt", "yuv420p",
+                    "-movflags", "+faststart",
+                    "-y",
+                    outputFile.absolutePath
+                ))
+
+                // Prepend -hide_banner and -stats
+                commandList.addAll(0, listOf("-hide_banner", "-stats"))
+
+                uiHandler.post {
+                    export(commandList.toTypedArray())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                uiHandler.post { onExportFailed() }
+            }
+        }
     }
 
     // endregion

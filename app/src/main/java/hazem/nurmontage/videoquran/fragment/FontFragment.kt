@@ -11,15 +11,13 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import hazem.nurmontage.videoquran.R
 import hazem.nurmontage.videoquran.Utils.FontProvider
+import hazem.nurmontage.videoquran.adabter.FontTextAdabters
 import hazem.nurmontage.videoquran.databinding.FragmentFontBinding
 
-/**
- * Fragment for selecting a Quran font with snap-scrolling RecyclerView.
- * Converted from original Java FontFragment (138 lines).
- */
 class FontFragment() : Fragment() {
 
     private var fontSelect: String? = null
+    private var fontTextAdabters: FontTextAdabters? = null
     private var fragmentBinding: FragmentFontBinding? = null
     private var iFontCallback: IFontCallback? = null
     private var isInit: Boolean = true
@@ -46,7 +44,6 @@ class FontFragment() : Fragment() {
             return instance!!
         }
     }
-
 
     constructor(callback: IFontCallback, font: String, typeface: Typeface) : this() {
         iFontCallback = callback
@@ -77,18 +74,17 @@ class FontFragment() : Fragment() {
             } ?: ""
             val indexOf = fontProvider.getFontNamesQuran().indexOf(fontNameWithoutExt)
 
-            // TODO: Uncomment when FontTextAdabters adapter is implemented
-            // val fontTextAdabters = FontTextAdabters(
-            //     fontProvider,
-            //     iFontCallback,
-            //     fontProvider.getFontNamesQuran(),
-            //     indexOf
-            // )
+            fontTextAdabters = FontTextAdabters(
+                fontProvider,
+                iFontCallback,
+                fontProvider.getFontNamesQuran(),
+                indexOf
+            )
             val llm = LinearLayoutManager(requireContext())
             linearLayoutManager = llm
             recyclerView?.layoutManager = llm
             recyclerView?.setHasFixedSize(true)
-            // recyclerView?.adapter = fontTextAdabters
+            recyclerView?.adapter = fontTextAdabters
 
             val snapHelper = LinearSnapHelper()
             snapHelper.attachToRecyclerView(recyclerView)
@@ -107,7 +103,7 @@ class FontFragment() : Fragment() {
                     val snapView = snapHelper.findSnapView(linearLayoutManager) ?: return
                     val position = linearLayoutManager?.getPosition(snapView) ?: return
                     this@FontFragment.recyclerView?.post {
-                        // TODO: fontTextAdabters?.setSelected(position)
+                        fontTextAdabters?.setSelected(position)
                     }
                 }
             })
@@ -133,6 +129,8 @@ class FontFragment() : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        fontTextAdabters?.clear()
+        fontTextAdabters = null
         fragmentBinding = null
         iFontCallback = null
         instance = null

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
@@ -20,12 +19,6 @@ import hazem.nurmontage.videoquran.model.Gradient
 import hazem.nurmontage.videoquran.model.IpadItem
 import hazem.nurmontage.videoquran.views.TextCustumFont
 
-/**
- * Fragment for selecting the iPad frame style and color/gradient.
- * Provides a horizontal list of iPad frame types (IPAD, CLASSIC, CASSET, RECT, etc.)
- * and a tab layout for switching between color and gradient selection.
- * Converted from EditIpadFragment.java (209 lines).
- */
 class EditIpadFragment() : Fragment() {
 
     companion object {
@@ -67,7 +60,6 @@ class EditIpadFragment() : Fragment() {
     private var resourcesRef: Resources? = null
     private var rvType: RecyclerView? = null
 
-
     constructor(
         resources: Resources?,
         ipadType: Int,
@@ -82,10 +74,6 @@ class EditIpadFragment() : Fragment() {
         this.resourcesRef = resources
         this.indexSelect = indexSelect
         this.isGradient = isGradient
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -119,7 +107,6 @@ class EditIpadFragment() : Fragment() {
 
         val posSelect = getPosSelect(ipadType, ipadItems)
 
-        // TODO: IpadAdabter needs to be implemented
         ipadAdabter = IpadAdabter(
             BillingPreferences.isSubscribed(requireContext()),
             posSelect,
@@ -216,11 +203,10 @@ class EditIpadFragment() : Fragment() {
     }
 
     private fun getFragment(position: Int): Fragment {
-        // TODO: GradientFragment and ColorsFragment need to be implemented
         return if (position == 1) {
-            GradientFragment.getInstance(iIpadEditCallback as Any, indexSelect)
+            GradientFragment.getInstance(iIpadEditCallback!!, indexSelect)
         } else {
-            ColorsFragment.getInstance(iIpadEditCallback as Any, indexSelect)
+            ColorsFragment.getInstance(iIpadEditCallback!!, indexSelect)
         }
     }
 
